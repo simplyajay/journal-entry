@@ -1,0 +1,25 @@
+{
+  "name": "journal-entry",
+  "version": "1.0.0",
+  "description": "",
+  "main": "electron/dist/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"npm run dev:vite\" \"npm run dev:electron\"",
+    "dev:vite": "cd renderer && npm run dev",
+    "dev:electron": "wait-on http://localhost:5173 && tsc && electron .",
+    "build": "cd renderer && npm run build && tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "concurrently": "^10.0.0",
+    "electron": "^42.3.0",
+    "wait-on": "^9.0.10"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
+  }
+}
