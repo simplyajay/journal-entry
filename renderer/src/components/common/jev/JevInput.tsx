@@ -35,10 +35,10 @@ export type InputType =
   | "currency";
 
 const INPUT_BASE =
-  "w-full min-w-0 min-h-12 p-2  font-manrope text-lg text-gray-800 rounded-lg border border-gray-400 ";
+  "w-full min-w-0 min-h-12 p-2 font-manrope text-lg text-gray-800 rounded-sm border border-ring ";
 
 const TABLE_INPUT_BASE =
-  "w-full min-w-0 min-h-12 p-2 font-manrope text-lg text-gray-800 border-0 rounded-none p-1 bg-transparent rounded-md hover:bg-white";
+  "w-full min-w-0 min-h-12 p-2 font-manrope text-lg focus-visible:ring-1 text-gray-800 border-transparent rounded-sm bg-transparent hover:bg-white";
 
 type BaseProps<T extends FieldValues> = InputHTMLAttributes<HTMLInputElement> & {
   fieldName: Path<T>;
@@ -105,15 +105,15 @@ export const Select = <T extends FieldValues>(props: SelectInputProps<T>) => {
       name={fieldName}
       control={control}
       disabled={disabled}
-      aria-invalid={!!errorMessage}
       render={({ field }) => (
         <SelectBase
           value={field.value ?? ""}
           onValueChange={(val) => field.onChange(val || undefined)}
         >
           <SelectTrigger
-            className={`${INPUT_BASE} w-full truncate ${errorMessage ? "border-red-500" : ""} group ${variant === "table" ? "border-none bg-transparent hover:bg-white" : ""}`}
+            className={`${INPUT_BASE} w-full truncate group ${variant === "table" ? "border-transparent bg-transparent hover:bg-white" : ""}`}
             disabled={field.disabled}
+            aria-invalid={!!errorMessage}
           >
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
@@ -144,7 +144,6 @@ export const DatePicker = <T extends FieldValues>(props: BaseProps<T>) => {
       name={fieldName}
       control={control}
       disabled={disabled}
-      aria-invalid={!!errorMessage}
       render={({ field }) => (
         <Field className="w-full">
           <Popover
@@ -159,8 +158,9 @@ export const DatePicker = <T extends FieldValues>(props: BaseProps<T>) => {
                 variant="outline"
                 size="icon-lg"
                 id="date"
+                aria-invalid={!!errorMessage}
                 disabled={field.disabled}
-                className={`${INPUT_BASE} bg-transparent justify-start ${errorMessage ? "border-red-500" : ""} ${variant === "table" ? "border-none bg-transparent hover:bg-white" : ""} ${disabled ? "bg-muted" : ""}`}
+                className={`${INPUT_BASE} bg-transparent justify-start ${field.value ? "" : "text-muted-foreground hover:text-muted-foreground"} ${variant === "table" ? "border-transparent bg-transparent hover:bg-white" : ""} ${disabled ? "bg-muted" : ""} data-[state=open]:text-muted-foreground`}
               >
                 {field.value ? field.value.toLocaleDateString() : placeholder}
               </Button>
@@ -204,7 +204,7 @@ export const Input = <T extends FieldValues>(props: BaseProps<T>) => {
   return (
     <InputBase
       {...register(fieldName, { valueAsNumber: type === "number", disabled })}
-      className={`${styles} ${errorMessage ? "border border-red-500" : ""} ${disabled ? "bg-muted" : ""} ${className}`}
+      className={`${styles} ${errorMessage ? "" : ""} ${disabled ? "bg-muted" : ""} ${className}`}
       inputMode={type === "number" ? "decimal" : undefined}
       type={type}
       aria-invalid={!!errorMessage}
@@ -255,9 +255,10 @@ const CurrencyInputBase = <T extends FieldValues>(props: CurrencyInputBaseProps<
 
   return (
     <InputBase
-      className={`${styles} ${errorMessage ? "border border-red-500" : ""}  ${className}`}
+      className={`${styles} ${className}`}
       inputMode="decimal"
       placeholder={placeholder}
+      aria-invalid={!!errorMessage}
       disabled={disabled}
       value={displayValue}
       onChange={(e) => {
@@ -278,13 +279,10 @@ const CurrencyInputBase = <T extends FieldValues>(props: CurrencyInputBaseProps<
 export const CurrencyInput = <T extends FieldValues>(props: BaseProps<T>) => {
   const { control, fieldName } = props;
 
-  const errorMessage = get(props.errors, props.fieldName)?.message as string | undefined;
-
   return (
     <Controller
       name={fieldName}
       control={control}
-      aria-invalid={!!errorMessage}
       render={({ field }) => (
         <CurrencyInputBase {...props} value={field.value} onChange={field.onChange} />
       )}
@@ -302,7 +300,7 @@ export const TextArea = <T extends FieldValues>(props: BaseProps<T>) => {
       {...register(fieldName)}
       disabled={disabled}
       aria-invalid={!!errorMessage}
-      className={`${INPUT_BASE} ${props.className} ${errorMessage ? "border-red-500" : ""} disabled:cursor-none`}
+      className={`${INPUT_BASE} ${props.className} disabled:cursor-none`}
       placeholder={placeholder}
       onFocus={() => clearErrors(fieldName)}
     />
