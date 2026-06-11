@@ -9,6 +9,7 @@ function createWindow() {
     height: 800,
     titleBarStyle: "hidden",
     transparent: true,
+    frame: false,
 
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
@@ -19,6 +20,9 @@ function createWindow() {
 
   Menu.setApplicationMenu(null);
   win.loadURL("http://localhost:5173");
+  win.webContents.openDevTools({
+    mode: "detach",
+  });
 }
 
 app.whenReady().then(() => {
