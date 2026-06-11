@@ -1,7 +1,6 @@
 import type { FieldPath } from "react-hook-form";
 import type { InputType } from "@/components/common/jev/JevInput";
 import type { SupportingDocumentSchemaType, JournalEntrySchemaType } from "./schema";
-import { supportingDocumentsMap } from "./constants";
 
 export type SupportingDocumentType =
   | "po"
@@ -27,7 +26,6 @@ type AllowedSupportingDocuments = {
 type SupportingDocument = {
   [K in SupportingDocumentType]: {
     type: K;
-    description: (typeof supportingDocumentsMap)[K];
     number: string;
     date: Date;
   };
@@ -52,7 +50,6 @@ export type AccountEntry = {
 export type SupportingDocumentEntry = {
   type: SupportingDocumentType;
   number: string;
-  description: string;
   date: Date;
 };
 

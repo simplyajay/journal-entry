@@ -67,36 +67,37 @@ const SupportingDocumentSchema = z.object({
     "rcd",
     "ris",
   ]),
-  description: z.string().nonempty("Enter description."),
   number: z.string().nonempty("Enter document number."),
   date: z.date("Select date"),
 });
 
 const CKDJSupportingDocumentSchema = SupportingDocumentSchema.extend({
-  type: z.enum<SupportingDocumentType[]>(["bur", "po", "inv", "ar", "or"]),
+  type: z.enum<SupportingDocumentType[]>(["bur", "po", "inv", "ar", "or"], {
+    error: "Select Document",
+  }),
 });
 
 const CDJSupportingDocumentSchema = SupportingDocumentSchema.extend({
-  type: z.enum<SupportingDocumentType[]>(["bur"]),
+  type: z.enum<SupportingDocumentType[]>(["bur"], { error: "Select Document" }),
 });
 
 const CRJSupportingDocumentSchema = SupportingDocumentSchema.extend({
-  type: z.enum<SupportingDocumentType[]>(["rcd"]),
+  type: z.enum<SupportingDocumentType[]>(["rcd"], { error: "Select Document" }),
 });
 
 const MSIJSupportingDocumentSchema = SupportingDocumentSchema.extend({
-  type: z.enum<SupportingDocumentType[]>(["ris"]),
+  type: z.enum<SupportingDocumentType[]>(["ris"], { error: "Select Document" }),
 });
 
 const GJSupportingDocumentSchema = SupportingDocumentSchema.extend({
-  type: z.enum<SupportingDocumentType[]>(["lr"]),
+  type: z.enum<SupportingDocumentType[]>(["lr"], { error: "Select Document" }),
 });
 
 const BaseSchema = z.object({
   journalType: z.enum<JournalType[]>(["ckdj", "cdj", "crj", "gj", "msij"]),
   journalEntryVoucherNumber: z.string().nonempty("Please enter JEV Number."),
   journalEntryVoucherDate: z.date("Select Date"),
-  accountingEntries: z.array(AccountEntrySchema).min(1, "Enter Account"),
+  accountingEntries: z.array(AccountEntrySchema).min(2, "Enter atleast 2 accounts"),
   description: z.string().nonempty("Please enter description."),
 });
 

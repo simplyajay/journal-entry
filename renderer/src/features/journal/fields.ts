@@ -134,10 +134,10 @@ export const getAccountEntrySectionFields = (
 export const getSupportingDocumentSectionFields = (
   journalType?: JournalType,
 ): TableColumn<SupportingDocumentSchemaType>[] => [
-  { name: "number", label: "Document No.", type: "text", width: "w-[20%]" },
+  { name: "number", label: "Document No.", type: "text", width: "w-[30%]" },
   {
     name: "type",
-    label: "Document",
+    label: "Description",
     type: "select",
     options: journalType
       ? allowedSupportingDocumentsMap[journalType].map((value) => ({
@@ -145,10 +145,9 @@ export const getSupportingDocumentSectionFields = (
           label: supportingDocumentsMap[value],
         }))
       : [],
-    width: "w-[30%]",
+    width: "w-[40%]",
   },
-  { name: "description", label: "Description", type: "text", width: "w-[30%]" },
-  { name: "date", label: "Document Date", type: "date-picker", width: "w-[15%]" },
+  { name: "date", label: "Document Date", type: "date-picker", width: "w-[25%]" },
 ];
 
 export const summarySectionFields = (journal?: JournalType): JournalEntryField[] => {
