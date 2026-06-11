@@ -14,6 +14,7 @@ export const useJevForm = () => {
       journalType: undefined,
       accountingEntries: [
         { accountCode: "", accountName: "", debit: undefined, credit: undefined },
+        { accountCode: "", accountName: "", debit: undefined, credit: undefined },
       ],
     },
   });
