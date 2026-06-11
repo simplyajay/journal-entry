@@ -44,7 +44,7 @@ type JevTableProps<TRow extends FieldValues, TForm extends FieldValues> = {
   clearErrors: UseFormClearErrors<TForm>;
   append: (value: TRow) => void;
   remove: (index: number) => void;
-  defaultRow: TRow;
+  defaultRow: Partial<TRow>;
   footerClass?: string;
   footerContent?: React.ReactNode;
   customErrorPaths?: Path<TForm>[];
@@ -80,9 +80,12 @@ export function JevTable<TRow extends FieldValues, TForm extends FieldValues>({
   return (
     <TableBase className={`table-fixed ${disabled ? "bg-muted" : ""} rounded-b-lg`}>
       <TableHeaderBase>
-        <TableRow className="text-lg text-gray-800">
+        <TableRow className="text-lg">
           {columns.map((col) => (
-            <TableHead key={String(col.name)} className={`${col.width} text-gray-700`}>
+            <TableHead
+              key={String(col.name)}
+              className={`${col.width} ${disabled ? "text-muted-foreground" : "text-gray-700"}`}
+            >
               {col.label}
             </TableHead>
           ))}
@@ -95,7 +98,7 @@ export function JevTable<TRow extends FieldValues, TForm extends FieldValues>({
             <TableRow
               key={row.id}
               onClick={() => clearRowErrors(rowIndex)}
-              className={`${!disabled ? "hover:bg-muted/50" : ""} `}
+              className={`${!disabled ? "hover:bg-muted/50" : ""}`}
             >
               {columns.map((col) => {
                 const rowValues = watchedFields?.[rowIndex] ?? defaultRow;
@@ -122,7 +125,7 @@ export function JevTable<TRow extends FieldValues, TForm extends FieldValues>({
                 );
               })}
               <TableCell className="w-0 whitespace-nowrap px-0 py-4 align-top">
-                {(isOptional || rowIndex !== 0) && (
+                {(isOptional || rowIndex > 1) && (
                   <Button
                     variant="destructive"
                     type="button"
@@ -139,11 +142,11 @@ export function JevTable<TRow extends FieldValues, TForm extends FieldValues>({
         <TableRow>
           <TableCell className="text-center p-0" colSpan={5}>
             <Button
-              className="w-full justify-center text-gray-800 rounded-sm bg-transparent p-6"
+              className="w-full justify-center text-gray-600 rounded-sm bg-transparent p-6"
               variant="secondary"
               type="button"
               disabled={disabled}
-              onClick={() => append(defaultRow)}
+              onClick={() => append(defaultRow as TRow)}
             >
               <PlusIcon className="size-6" />
             </Button>
