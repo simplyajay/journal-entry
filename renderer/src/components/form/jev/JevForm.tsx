@@ -33,15 +33,16 @@ const JevForm = () => {
         <div className="w-full flex flex-col p-5 gap-5 border shadow-sm rounded-lg">
           <JournalSection />
           <CkdjCdjSection />
+          <SummarySection />
           <AccountsSection />
           <DocumentsSection />
-          <SummarySection />
 
           <div className="w-full flex justify-end">
             <Button
               className=" text-lg text-gray-800 p-6"
               type="submit"
               variant="secondary"
+              disabled={!journalType}
             >
               Submit
             </Button>
