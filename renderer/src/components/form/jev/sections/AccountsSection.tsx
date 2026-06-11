@@ -58,15 +58,21 @@ const AccountsSection = () => {
     );
   }, [accountingEntries]);
 
-  const balanceError =
+  const isNotBalance = totals.credit !== totals.debit;
+
+  const balanceErrorMessage =
     (errors.accountingEntries as any)?.message ?? errors.accountingEntries?.root?.message;
 
   return (
-    <div className="w-full flex flex-col border border-gray-300 rounded-lg">
+    <div className="w-full flex flex-col border border-ring/50 rounded-md">
       <div
-        className={`w-full flex justify-center p-2 border rounded-t-lg ${!journalType ? "bg-muted" : ""}`}
+        className={`w-full flex justify-center p-2 rounded-t-md ${!journalType ? "bg-muted" : ""}`}
       >
-        <h2 className="text-gray-800 text-xl font-semibold">Accounts and Explanation</h2>
+        <h2
+          className={`text-xl font-semibold ${!journalType ? "text-muted-foreground" : "text-gray-700"}`}
+        >
+          Accounts and Explanation
+        </h2>
       </div>
       <JevTable<AccountingEntrySchemaType, JournalEntrySchemaType>
         name="accountingEntries"
@@ -89,17 +95,22 @@ const AccountsSection = () => {
                 Total
               </TableCell>
               <TableCell className="text-gray-800">
-                {formatNumber(totals.debit)}
+                <p className={`${isNotBalance ? "text-red-500" : ""}`}>
+                  {formatNumber(totals.debit)}
+                </p>
               </TableCell>
               <TableCell className="text-gray-800">
-                {formatNumber(totals.credit)}
+                <p className={`${isNotBalance ? "text-red-500" : ""}`}>
+                  {formatNumber(totals.credit)}
+                </p>
               </TableCell>
             </TableRow>
-            {balanceError && (
+            {balanceErrorMessage && (
               <TableRow className="pt-0">
-                <TableCell colSpan={4}>
-                  <p className="font-poppins-300 text-base text-red-500 ">
-                    {balanceError}
+                <TableCell colSpan={2} />
+                <TableCell colSpan={2}>
+                  <p className="font-poppins-300 text-lg text-red-500 ">
+                    {balanceErrorMessage}
                   </p>
                 </TableCell>
               </TableRow>
