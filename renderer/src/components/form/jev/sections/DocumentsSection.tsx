@@ -3,18 +3,10 @@ import { JevTable } from "@/components/common/jev/JevTable";
 import { useFieldArray } from "react-hook-form";
 import { getSupportingDocumentSectionFields } from "@/features/journal/fields";
 import { useJevFormContext } from "../JevFormContext";
-import type { SupportingDocumentEntry } from "@/features/journal/types";
 import type {
   JournalEntrySchemaType,
   SupportingDocumentSchemaType,
 } from "@/features/journal/schema";
-
-const defaultSupportingDocument: SupportingDocumentEntry = {
-  type: "ar",
-  number: "",
-  description: "",
-  date: new Date(Date.now()),
-};
 
 const DocumentsSection = () => {
   const {
@@ -40,10 +32,14 @@ const DocumentsSection = () => {
 
   return (
     <div
-      className={`w-full flex flex-col border border-gray-300 rounded-lg ${!journalType ? "bg-muted" : ""}`}
+      className={`w-full flex flex-col border border-ring/50 rounded-md ${!journalType ? "bg-muted" : ""}`}
     >
-      <div className="w-full flex justify-center p-2 border">
-        <h2 className="text-gray-800 text-xl font-semibold">Supporting Documents</h2>
+      <div className="w-full flex justify-center p-2">
+        <h2
+          className={`text-xl font-semibold ${!journalType ? "text-muted-foreground" : "text-gray-700"}`}
+        >
+          Supporting Documents
+        </h2>
       </div>
       <JevTable<SupportingDocumentSchemaType, JournalEntrySchemaType>
         name="supportingDocuments"
@@ -56,7 +52,11 @@ const DocumentsSection = () => {
         disabled={!journalType}
         append={appendDocument}
         remove={removeDocument}
-        defaultRow={defaultSupportingDocument}
+        defaultRow={{
+          type: "ar",
+          number: "",
+          date: undefined,
+        }}
         isOptional
       />
     </div>
