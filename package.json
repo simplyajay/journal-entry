@@ -17,9 +17,11 @@
   "dependencies": {
     "concurrently": "^10.0.0",
     "electron": "^42.3.0",
+    "node-sqlite3-wasm": "^0.8.58",
     "wait-on": "^9.0.10"
   },
   "devDependencies": {
+    "@types/node": "^25.9.3",
     "typescript": "^6.0.3"
   }
 }
