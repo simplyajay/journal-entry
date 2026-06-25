@@ -1,16 +1,26 @@
-import AppWindow from "./components/AppWindow";
+import AppWindow from "./AppWindow";
 import JevForm from "./components/form/jev/JevForm";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./pages/protected/AuthContext";
+import ProtectedRoute from "./pages/protected/ProtectedRoute";
+import AuthPage from "./pages/AuthPage";
 
-function App() {
+const App = () => {
   return (
     <AppWindow>
-      <div className="px-4 py-6">
-        <div className="max-w-screen-2xl mx-auto px-4 md:px-6 lg:px-8 py-2 md:py-4">
-          <JevForm />
-        </div>
-      </div>
+      <HashRouter>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Navigate to={"/auth"} replace />} />
+            <Route path="/auth" element={<AuthPage />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/jev/new" element={<JevForm />} />
+            </Route>
+          </Routes>
+        </AuthProvider>
+      </HashRouter>
     </AppWindow>
   );
-}
+};
 
 export default App;
