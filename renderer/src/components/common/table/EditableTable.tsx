@@ -1,5 +1,4 @@
 import React from "react";
-import { type InputType, JevInput } from "./JevInput";
 import { Button } from "../ui/button";
 import {
   Table as TableBase,
@@ -13,15 +12,13 @@ import {
 import { PlusIcon, Trash2 } from "lucide-react";
 import { useWatch } from "react-hook-form";
 import type {
-  Control,
-  FieldErrors,
   FieldValues,
-  UseFormClearErrors,
-  UseFormRegister,
   Path,
   FieldPath,
+  UseFormReturn,
 } from "react-hook-form";
-import type { SelectOptions } from "@/features/journal/types";
+import type { SelectOptions, InputType } from "../field/_types";
+import { InputRenderer } from "../field/RHFInputRenderer";
 
 export type TableColumn<TRow extends FieldValues> = {
   name: FieldPath<TRow>;
@@ -38,10 +35,7 @@ type JevTableProps<TRow extends FieldValues, TForm extends FieldValues> = {
   columns: TableColumn<TRow>[];
   fields: (TRow & { id: string })[];
   name: Path<TForm>;
-  register: UseFormRegister<TForm>;
-  control: Control<TForm>;
-  errors: FieldErrors<TForm>;
-  clearErrors: UseFormClearErrors<TForm>;
+  form: UseFormReturn<TForm>;
   append: (value: TRow) => void;
   remove: (index: number) => void;
   defaultRow: Partial<TRow>;
@@ -52,14 +46,23 @@ type JevTableProps<TRow extends FieldValues, TForm extends FieldValues> = {
   disabled?: boolean;
 };
 
-export function JevTable<TRow extends FieldValues, TForm extends FieldValues>({
+/**
+ * Editable RHF table for nested field arrays.
+ *
+ * Assumes `name` is an array property on the parent form
+ * (e.g. `accountingEntries`, `supportingDocuments`).
+ *
+ * Root-level array forms have not been tested and may
+ * require changes to field path generation.
+ */
+export function EditableTable<
+  TRow extends FieldValues,
+  TForm extends FieldValues,
+>({
   columns,
   fields,
   name,
-  clearErrors,
-  register,
-  control,
-  errors,
+  form,
   append,
   remove,
   defaultRow,
@@ -69,6 +72,8 @@ export function JevTable<TRow extends FieldValues, TForm extends FieldValues>({
   isOptional,
   disabled,
 }: JevTableProps<TRow, TForm>) {
+  const { control, clearErrors } = form;
+
   const watchedFields = useWatch({ control, name });
 
   const clearRowErrors = (rowIndex: number) => {
@@ -78,7 +83,9 @@ export function JevTable<TRow extends FieldValues, TForm extends FieldValues>({
     customErrorPaths?.forEach((path) => clearErrors(path));
   };
   return (
-    <TableBase className={`table-fixed ${disabled ? "bg-muted" : ""} rounded-b-lg`}>
+    <TableBase
+      className={`table-fixed ${disabled ? "bg-muted" : ""} rounded-b-lg`}
+    >
       <TableHeaderBase>
         <TableRow className="text-lg">
           {columns.map((col) => (
@@ -102,29 +109,29 @@ export function JevTable<TRow extends FieldValues, TForm extends FieldValues>({
             >
               {columns.map((col) => {
                 const rowValues = watchedFields?.[rowIndex] ?? defaultRow;
-                const disabled = col.getDisabled
-                  ? (col.disabled ?? false) || col.getDisabled(rowValues as TRow)
+                const cellDisabled = col.getDisabled
+                  ? (col.disabled ?? false) ||
+                    col.getDisabled(rowValues as TRow)
                   : (col.disabled ?? false);
 
                 return (
-                  <TableCell key={String(col.name)} className="font-medium p-2 align-top">
-                    <JevInput
-                      fieldName={`${name}.${rowIndex}.${String(col.name)}` as any}
-                      className="disabled:bg-transparent"
+                  <TableCell
+                    key={String(col.name)}
+                    className="p-2 align-top font-medium"
+                  >
+                    <InputRenderer<TRow, TForm>
+                      field={col}
+                      fieldName={
+                        `${name}.${rowIndex}.${String(col.name)}` as any
+                      }
+                      form={form}
                       variant="table"
-                      type={col.type}
-                      register={register}
-                      control={control}
-                      errors={errors}
-                      placeholder={col.placeholder}
-                      clearErrors={clearErrors}
-                      disabled={disabled}
-                      options={col.options ?? undefined}
+                      disabled={disabled || cellDisabled}
                     />
                   </TableCell>
                 );
               })}
-              <TableCell className="w-0 whitespace-nowrap px-0 py-4 align-top">
+              <TableCell className="w-0 px-0 py-4 align-top whitespace-nowrap">
                 {(isOptional || rowIndex > 1) && (
                   <Button
                     variant="destructive"
@@ -140,9 +147,9 @@ export function JevTable<TRow extends FieldValues, TForm extends FieldValues>({
           );
         })}
         <TableRow>
-          <TableCell className="text-center p-0" colSpan={5}>
+          <TableCell className="p-0 text-center" colSpan={columns.length + 1}>
             <Button
-              className="w-full justify-center text-gray-600 rounded-sm bg-transparent p-6"
+              className="w-full justify-center rounded-sm bg-transparent p-6 text-gray-600"
               variant="secondary"
               type="button"
               disabled={disabled}
