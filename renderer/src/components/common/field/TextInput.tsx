@@ -33,6 +33,7 @@ export const TextInput = <T extends FieldValues>({
       aria-invalid={!!errorMessage}
       placeholder={placeholder}
       onFocus={onFocus}
+      disabled={disabled}
       type={type}
     />
   );
