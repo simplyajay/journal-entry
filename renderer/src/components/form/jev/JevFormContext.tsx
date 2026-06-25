@@ -1,7 +1,7 @@
 import React, { createContext, useContext } from "react";
 import { useWatch, type UseFormReturn } from "react-hook-form";
-import type { JournalEntrySchemaType } from "@/features/journal/schema";
-import type { JournalType } from "@/features/journal/types";
+import type { JournalEntrySchemaType } from "@/components/form/jev/_schema";
+import type { JournalType } from "@/components/form/jev/_types";
 
 type JevFormContextType = {
   form: UseFormReturn<JournalEntrySchemaType>;
@@ -29,7 +29,8 @@ export const JevFormProvider = ({
 export const useJevFormContext = () => {
   const ctx = useContext(JevFormContext);
 
-  if (!ctx) throw new Error("useJevFormContext must be used inside JevFormProvider");
+  if (!ctx)
+    throw new Error("useJevFormContext must be used inside JevFormProvider");
 
   return ctx;
 };

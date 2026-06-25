@@ -1,23 +1,17 @@
 import { useMemo } from "react";
-import { JevTable } from "@/components/common/jev/JevTable";
+import { EditableTable } from "@/components/common/table/EditableTable";
 import { useFieldArray } from "react-hook-form";
-import { getSupportingDocumentSectionFields } from "@/features/journal/fields";
+import { getSupportingDocumentSectionFields } from "@/components/form/jev/_fields";
 import { useJevFormContext } from "../JevFormContext";
 import type {
   JournalEntrySchemaType,
   SupportingDocumentSchemaType,
-} from "@/features/journal/schema";
+} from "@/components/form/jev/_schema";
 
 const DocumentsSection = () => {
-  const {
-    form: {
-      register,
-      control,
-      clearErrors,
-      formState: { errors },
-    },
-    journalType,
-  } = useJevFormContext();
+  const { form, journalType } = useJevFormContext();
+
+  const { control } = form;
 
   const {
     fields: documentEntries,
@@ -32,23 +26,20 @@ const DocumentsSection = () => {
 
   return (
     <div
-      className={`w-full flex flex-col border border-ring/50 rounded-md ${!journalType ? "bg-muted" : ""}`}
+      className={`border-ring/50 flex w-full flex-col rounded-md border ${!journalType ? "bg-muted" : ""}`}
     >
-      <div className="w-full flex justify-center p-2">
+      <div className="flex w-full justify-center p-2">
         <h2
           className={`text-xl font-semibold ${!journalType ? "text-muted-foreground" : "text-gray-700"}`}
         >
           Supporting Documents
         </h2>
       </div>
-      <JevTable<SupportingDocumentSchemaType, JournalEntrySchemaType>
+      <EditableTable<SupportingDocumentSchemaType, JournalEntrySchemaType>
         name="supportingDocuments"
         columns={columns}
         fields={documentEntries}
-        control={control}
-        register={register}
-        errors={errors}
-        clearErrors={clearErrors}
+        form={form}
         disabled={!journalType}
         append={appendDocument}
         remove={removeDocument}

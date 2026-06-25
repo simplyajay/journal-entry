@@ -1,16 +1,16 @@
 import { useMemo } from "react";
-import { JevTable } from "@/components/common/jev/JevTable";
+import { EditableTable } from "@/components/common/table/EditableTable";
 import { TableRow, TableCell } from "@/components/common/ui/table";
 import { useFieldArray, useWatch } from "react-hook-form";
-import { getAccountEntrySectionFields } from "@/features/journal/fields";
+import { getAccountEntrySectionFields } from "../_fields";
 import { useJevFormContext } from "../JevFormContext";
 import { formatNumber } from "@/components/common/lib/utils";
-import type { AccountEntry } from "@/features/journal/types";
-import type { TableColumn } from "@/components/common/jev/JevTable";
+import type { AccountEntry } from "@/components/form/jev/_types";
+import type { TableColumn } from "@/components/common/table/EditableTable";
 import type {
   AccountingEntrySchemaType,
   JournalEntrySchemaType,
-} from "@/features/journal/schema";
+} from "@/components/form/jev/_schema";
 
 const defaultAccountEntry: AccountEntry = {
   accountCode: "",
@@ -20,15 +20,12 @@ const defaultAccountEntry: AccountEntry = {
 };
 
 const AccountsSection = () => {
+  const { form, journalType } = useJevFormContext();
+
   const {
-    form: {
-      register,
-      control,
-      clearErrors,
-      formState: { errors },
-    },
-    journalType,
-  } = useJevFormContext();
+    control,
+    formState: { errors },
+  } = form;
 
   const {
     fields: accountEntries,
@@ -45,9 +42,13 @@ const AccountsSection = () => {
       accountingEntries?.reduce(
         (acc, entry) => {
           const debit =
-            typeof entry.debit === "number" && !isNaN(entry.debit) ? entry.debit : 0;
+            typeof entry.debit === "number" && !isNaN(entry.debit)
+              ? entry.debit
+              : 0;
           const credit =
-            typeof entry.credit === "number" && !isNaN(entry.credit) ? entry.credit : 0;
+            typeof entry.credit === "number" && !isNaN(entry.credit)
+              ? entry.credit
+              : 0;
           return {
             debit: acc.debit + debit,
             credit: acc.credit + credit,
@@ -61,12 +62,13 @@ const AccountsSection = () => {
   const isNotBalance = totals.credit !== totals.debit;
 
   const balanceErrorMessage =
-    (errors.accountingEntries as any)?.message ?? errors.accountingEntries?.root?.message;
+    (errors.accountingEntries as any)?.message ??
+    errors.accountingEntries?.root?.message;
 
   return (
-    <div className="w-full flex flex-col border border-ring/50 rounded-md">
+    <div className="border-ring/50 flex w-full flex-col rounded-md border">
       <div
-        className={`w-full flex justify-center p-2 rounded-t-md ${!journalType ? "bg-muted" : ""}`}
+        className={`flex w-full justify-center rounded-t-md p-2 ${!journalType ? "bg-muted" : ""}`}
       >
         <h2
           className={`text-xl font-semibold ${!journalType ? "text-muted-foreground" : "text-gray-700"}`}
@@ -74,14 +76,13 @@ const AccountsSection = () => {
           Accounts and Explanation
         </h2>
       </div>
-      <JevTable<AccountingEntrySchemaType, JournalEntrySchemaType>
+      <EditableTable<AccountingEntrySchemaType, JournalEntrySchemaType>
         name="accountingEntries"
-        columns={accountSectionFields as TableColumn<AccountingEntrySchemaType>[]}
+        columns={
+          accountSectionFields as TableColumn<AccountingEntrySchemaType>[]
+        }
         fields={accountEntries}
-        control={control}
-        register={register}
-        errors={errors}
-        clearErrors={clearErrors}
+        form={form}
         append={appendAccount}
         remove={removeAccount}
         disabled={!journalType}
@@ -90,7 +91,7 @@ const AccountsSection = () => {
         footerClass="bg-transparent"
         footerContent={
           <>
-            <TableRow className="text-lg font-gray-700 !hover:bg-transparent border-b-0 font-medium">
+            <TableRow className="font-gray-700 !hover:bg-transparent border-b-0 text-lg font-medium">
               <TableCell colSpan={2} className="text-gray-800">
                 Total
               </TableCell>
@@ -109,7 +110,7 @@ const AccountsSection = () => {
               <TableRow className="pt-0">
                 <TableCell colSpan={2} />
                 <TableCell colSpan={2}>
-                  <p className="font-poppins-300 text-lg text-red-500 ">
+                  <p className="font-poppins-300 text-lg text-red-500">
                     {balanceErrorMessage}
                   </p>
                 </TableCell>

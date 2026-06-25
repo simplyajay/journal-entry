@@ -1,39 +1,23 @@
 import { useJevFormContext } from "../JevFormContext";
-import { ckdj_cdjSectionFields } from "@/features/journal/fields";
-import { JevInput } from "@/components/common/jev/JevInput";
+import { ckdj_cdjSectionFields } from "@/components/form/jev/_fields";
 import { FORM_SECTION_CLASS } from "../JevForm";
+import { InputRenderer } from "../../../common/field/RHFInputRenderer";
 
 const CkdjCdjSection = () => {
-  const {
-    form: {
-      register,
-      control,
-      clearErrors,
-      formState: { errors },
-    },
-    journalType,
-  } = useJevFormContext();
+  const { form, journalType } = useJevFormContext();
 
   const ckdj_cdj_fields = ckdj_cdjSectionFields(journalType);
 
   return (
     !(journalType !== "ckdj" && journalType !== "cdj") && (
       <div className={FORM_SECTION_CLASS}>
-        {ckdj_cdj_fields.map((field, index) => (
-          <div key={index} className="flex-1 min-w-0">
-            <JevInput
-              fieldName={field.name}
-              label={field.label}
-              type={field.type}
-              register={register}
-              control={control}
-              errors={errors}
-              placeholder={field.placeholder}
-              clearErrors={clearErrors}
-              options={field.options}
-            />
-          </div>
-        ))}
+        {ckdj_cdj_fields.map((field, index) => {
+          return (
+            <div key={index} className="min-w-0 flex-1">
+              <InputRenderer field={field} form={form} />
+            </div>
+          );
+        })}
       </div>
     )
   );

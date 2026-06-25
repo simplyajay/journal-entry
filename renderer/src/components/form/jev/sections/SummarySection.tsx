@@ -1,39 +1,22 @@
 import { useJevFormContext } from "../JevFormContext";
-import { JevInput } from "@/components/common/jev/JevInput";
-import { summarySectionFields } from "@/features/journal/fields";
+import { summarySectionFields } from "@/components/form/jev/_fields";
 import { FORM_SECTION_CLASS } from "../JevForm";
+import { InputRenderer } from "@/components/common/field/RHFInputRenderer";
 
 const SummarySection = () => {
-  const {
-    form: {
-      register,
-      control,
-      clearErrors,
-      formState: { errors },
-    },
-    journalType,
-  } = useJevFormContext();
+  const { form, journalType } = useJevFormContext();
 
   const summary_fields = summarySectionFields(journalType);
 
   return (
     <div className={FORM_SECTION_CLASS}>
-      {summary_fields.map((field, index) => (
-        <div key={index} className="flex-1 min-w-0">
-          <JevInput
-            fieldName={field.name}
-            label={field.label}
-            type={field.type}
-            register={register}
-            control={control}
-            errors={errors}
-            disabled={!journalType}
-            placeholder={field.placeholder}
-            clearErrors={clearErrors}
-            options={field.options}
-          />
-        </div>
-      ))}
+      {summary_fields.map((field, index) => {
+        return (
+          <div key={index} className="min-w-0 flex-1">
+            <InputRenderer field={field} form={form} />
+          </div>
+        );
+      })}
     </div>
   );
 };
