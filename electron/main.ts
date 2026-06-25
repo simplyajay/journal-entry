@@ -1,16 +1,21 @@
-import { app, BrowserWindow, ipcMain, Menu } from "electron";
 import path from "path";
+import { app, BrowserWindow, ipcMain, Menu } from "electron";
+import { initializeDatabase } from "./db/database";
+import { registerJevHandlers } from "./ipc/jev.handlers";
+import { registerAuthHandlers } from "./ipc/auth.handlers";
+import { registerStoreHandlers } from "./ipc/session.handler";
+import { registerWindowHandlers } from "./ipc/window.handlers";
 
 let win: BrowserWindow;
 
-function createWindow() {
+const createWindow = () => {
   win = new BrowserWindow({
     width: 1200,
     height: 800,
-    titleBarStyle: "hidden",
-    transparent: true,
+    minWidth: 1024,
+    minHeight: 800,
     frame: false,
-
+    thickFrame: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
@@ -23,26 +28,24 @@ function createWindow() {
   win.webContents.openDevTools({
     mode: "detach",
   });
-}
+};
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  try {
+    initializeDatabase();
+  } catch (err) {
+    console.error("[DB] Failed to initialize database:", err);
+    app.quit();
+    return;
+  }
+
+  registerJevHandlers();
+  registerAuthHandlers();
+  registerStoreHandlers();
+
   createWindow();
 
-  ipcMain.on("minimize", () => {
-    win.minimize();
-  });
-
-  ipcMain.on("toggle-maximize", () => {
-    if (win.isMaximized()) {
-      win.unmaximize();
-    } else {
-      win.maximize();
-    }
-  });
-
-  ipcMain.on("close", () => {
-    win.close();
-  });
+  registerWindowHandlers(win);
 });
 
 app.on("window-all-closed", () => {
