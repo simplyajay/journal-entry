@@ -173,6 +173,7 @@ export const summarySectionFields = (
       placeholder: "Enter description...",
       label: "Description",
       type: "textarea",
+      disabled: !journal,
     },
   ];
 

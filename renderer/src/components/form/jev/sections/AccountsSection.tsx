@@ -68,10 +68,10 @@ const AccountsSection = () => {
   return (
     <div className="border-ring/50 flex w-full flex-col rounded-md border">
       <div
-        className={`flex w-full justify-center rounded-t-md p-2 ${!journalType ? "bg-muted" : ""}`}
+        className={`flex w-full justify-center rounded-t-md p-2 ${!journalType ? "bg-muted/10" : ""}`}
       >
         <h2
-          className={`text-xl font-semibold ${!journalType ? "text-muted-foreground" : "text-gray-700"}`}
+          className={`text-xl font-semibold ${!journalType ? "text-muted-foreground/80" : "text-gray-700"}`}
         >
           Accounts and Explanation
         </h2>
@@ -92,15 +92,22 @@ const AccountsSection = () => {
         footerContent={
           <>
             <TableRow className="font-gray-700 !hover:bg-transparent border-b-0 text-lg font-medium">
-              <TableCell colSpan={2} className="text-gray-800">
+              <TableCell
+                colSpan={2}
+                className={`${!journalType ? "text-muted-foreground/80" : "text-gray-700"}`}
+              >
                 Total
               </TableCell>
-              <TableCell className="text-gray-800">
+              <TableCell
+                className={`${!journalType ? "text-muted-foreground/80" : "text-gray-700"}`}
+              >
                 <p className={`${isNotBalance ? "text-red-500" : ""}`}>
                   {formatNumber(totals.debit)}
                 </p>
               </TableCell>
-              <TableCell className="text-gray-800">
+              <TableCell
+                className={`${!journalType ? "text-muted-foreground/80" : "text-gray-700"}`}
+              >
                 <p className={`${isNotBalance ? "text-red-500" : ""}`}>
                   {formatNumber(totals.credit)}
                 </p>

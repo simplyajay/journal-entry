@@ -84,14 +84,14 @@ export function EditableTable<
   };
   return (
     <TableBase
-      className={`table-fixed ${disabled ? "bg-muted" : ""} rounded-b-lg`}
+      className={`table-fixed ${disabled ? "bg-muted/10" : ""} rounded-b-lg`}
     >
       <TableHeaderBase>
         <TableRow className="text-lg">
           {columns.map((col) => (
             <TableHead
               key={String(col.name)}
-              className={`${col.width} ${disabled ? "text-muted-foreground" : "text-gray-700"}`}
+              className={`${col.width} ${disabled ? "text-muted-foreground/80" : "text-gray-700"}`}
             >
               {col.label}
             </TableHead>

@@ -26,11 +26,11 @@ const DocumentsSection = () => {
 
   return (
     <div
-      className={`border-ring/50 flex w-full flex-col rounded-md border ${!journalType ? "bg-muted" : ""}`}
+      className={`border-ring/50 flex w-full flex-col rounded-md border ${!journalType ? "bg-muted/10" : ""}`}
     >
       <div className="flex w-full justify-center p-2">
         <h2
-          className={`text-xl font-semibold ${!journalType ? "text-muted-foreground" : "text-gray-700"}`}
+          className={`text-xl font-semibold ${!journalType ? "text-muted-foreground/80" : "text-gray-700"}`}
         >
           Supporting Documents
         </h2>
