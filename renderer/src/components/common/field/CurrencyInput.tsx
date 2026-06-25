@@ -68,7 +68,7 @@ export const CurrencyInput = <T extends FieldValues>({
             onFocus();
             handleFocus(field.value);
           }}
-          onBlur={() => handleBlur(field.value)}
+          onBlur={() => handleBlur(field.onChange)}
           onKeyDown={blockInvalidNumberKeys}
           onPaste={blockPaste}
         />
