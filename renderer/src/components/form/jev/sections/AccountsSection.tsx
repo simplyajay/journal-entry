@@ -71,7 +71,7 @@ const AccountsSection = () => {
         className={`flex w-full justify-center rounded-t-md p-2 ${!journalType ? "bg-muted/10" : ""}`}
       >
         <h2
-          className={`text-xl font-semibold ${!journalType ? "text-muted-foreground/80" : "text-gray-700"}`}
+          className={`font-semibold ${!journalType ? "text-muted-foreground/80" : "text-gray-700"}`}
         >
           Accounts and Explanation
         </h2>
@@ -91,7 +91,7 @@ const AccountsSection = () => {
         footerClass="bg-transparent"
         footerContent={
           <>
-            <TableRow className="font-gray-700 !hover:bg-transparent border-b-0 text-lg font-medium">
+            <TableRow className="font-gray-700 !hover:bg-transparent border-b-0 text-sm font-medium">
               <TableCell
                 colSpan={2}
                 className={`${!journalType ? "text-muted-foreground/80" : "text-gray-700"}`}
@@ -108,7 +108,7 @@ const AccountsSection = () => {
               <TableCell
                 className={`${!journalType ? "text-muted-foreground/80" : "text-gray-700"}`}
               >
-                <p className={`${isNotBalance ? "text-red-500" : ""}`}>
+                <p className={`${isNotBalance ? "text-red-500" : "text-sm"}`}>
                   {formatNumber(totals.credit)}
                 </p>
               </TableCell>
@@ -117,7 +117,7 @@ const AccountsSection = () => {
               <TableRow className="pt-0">
                 <TableCell colSpan={2} />
                 <TableCell colSpan={2}>
-                  <p className="font-poppins-300 text-lg text-red-500">
+                  <p className="font-poppins-300 text-sm text-red-500">
                     {balanceErrorMessage}
                   </p>
                 </TableCell>

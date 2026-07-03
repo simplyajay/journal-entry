@@ -35,7 +35,7 @@ export const useJevForm = () => {
       ...data,
       createdBy: "test",
     };
-    const result = await window.api.createJev(finalizedData);
+    const result = await window.api.jev.createJev(finalizedData);
 
     if (result.success) {
       console.log("[onSubmit] Created JEV, id:", result.data);

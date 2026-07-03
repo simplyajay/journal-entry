@@ -27,25 +27,26 @@ const JevForm = () => {
     <JevFormProvider form={form}>
       <form
         noValidate
-        className="w-full rounded-lg bg-[#ffffff]"
+        className="w-full bg-[#ffffff]"
         onSubmit={handleSubmit(onSubmit, scrollToFirstError)}
       >
-        <div className="flex w-full flex-col gap-5 rounded-lg border p-5 shadow-sm">
+        <div className="flex w-full flex-col rounded-lg p-2">
           <JournalSection />
           <CkdjCdjSection />
           <SummarySection />
-          <AccountsSection />
-          <DocumentsSection />
-
-          <div className="flex w-full justify-end">
-            <Button
-              className="p-6 text-lg text-gray-800"
-              type="submit"
-              variant="secondary"
-              disabled={!journalType}
-            >
-              Submit
-            </Button>
+          <div className="flex w-full flex-col gap-8">
+            <AccountsSection />
+            <DocumentsSection />
+            <div className="flex w-full justify-end">
+              <Button
+                className="p-4 text-gray-800"
+                type="submit"
+                variant="secondary"
+                disabled={!journalType}
+              >
+                Submit
+              </Button>
+            </div>
           </div>
         </div>
       </form>

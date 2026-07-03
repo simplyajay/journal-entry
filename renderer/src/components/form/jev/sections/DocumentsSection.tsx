@@ -30,7 +30,7 @@ const DocumentsSection = () => {
     >
       <div className="flex w-full justify-center p-2">
         <h2
-          className={`text-xl font-semibold ${!journalType ? "text-muted-foreground/80" : "text-gray-700"}`}
+          className={`font-semibold ${!journalType ? "text-muted-foreground/80" : "text-gray-700"}`}
         >
           Supporting Documents
         </h2>
