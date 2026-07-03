@@ -9,7 +9,7 @@ import {
   Settings,
 } from "lucide-react";
 import { cn } from "../lib/utils";
-import { useAuth } from "@/pages/AuthContext";
+import { useAuth } from "@/pages/contexts/AuthContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { useMain } from "@/pages/contexts/MainLayoutContext";
 
 const items = [
   { title: "Dashboard", url: "jev/dashboard", icon: LayoutDashboard },
@@ -31,6 +32,7 @@ const COLLAPSED_WIDTH = "48px";
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const { logout, currentUser: user } = useAuth();
+  const { setSettingsDialogOpen } = useMain();
 
   return (
     <div
@@ -124,10 +126,13 @@ const Sidebar = () => {
             <DropdownMenuLabel>{user?.username}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="hover:cursor-pointer">
-              <div className="flex w-full items-center gap-2 p-1">
+              <button
+                className="flex w-full items-center gap-2 p-1"
+                onClick={() => setSettingsDialogOpen(true)}
+              >
                 <Settings className="size-4" />
                 Settings
-              </div>
+              </button>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="text-destructive">
