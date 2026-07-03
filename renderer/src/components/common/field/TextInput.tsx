@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { Input } from "../ui/input";
 import { useFieldBase } from "./_useFieldBase";
 import { withFieldWrapper } from "./withFieldWrapper";
-import { INPUT_BASE, INPUT_VARIANTS } from "./_constants";
+import { INPUT_BASE, INPUT_VARIANTS } from "./_styles";
 import type { RegisterInputProps } from "./_types";
 import type { FieldValues } from "react-hook-form";
 import type { WithFieldWrapperProps } from "./withFieldWrapper";

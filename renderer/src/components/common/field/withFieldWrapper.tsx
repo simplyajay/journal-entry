@@ -18,20 +18,14 @@ export const withFieldWrapper = <
       | undefined;
 
     return (
-      <div className="font-manrope flex flex-1 flex-col gap-1 text-lg">
-        {props.label && (
-          <p className="font-manrope text-gray-800">{props.label}</p>
-        )}
+      <div className="font-manrope-600 flex flex-1 flex-col gap-1 text-sm">
+        {props.label && <p className="text-xs text-gray-700">{props.label}</p>}
 
         <Component {...props} />
 
-        <div className={`${props.variant === "table" ? "min-h-0" : "min-h-8"}`}>
-          {errorMessage && (
-            <p className="font-manrope text-base text-red-500">
-              {errorMessage}
-            </p>
-          )}
-        </div>
+        {errorMessage && (
+          <p className="font-manrope text-xs text-red-500">{errorMessage}</p>
+        )}
       </div>
     );
   };

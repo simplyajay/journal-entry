@@ -1,4 +1,4 @@
-import { fieldMap } from "./_constants";
+import { fieldMap } from "./fieldMap";
 import type { FieldValues } from "react-hook-form";
 import type { InputField, InputVariant } from "./_types";
 import type { UseFormReturn } from "react-hook-form";

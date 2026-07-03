@@ -6,7 +6,7 @@ import { Input } from "../ui/input";
 import { withFieldWrapper } from "./withFieldWrapper";
 import { formatNumber } from "../lib/utils";
 import { blockInvalidNumberKeys, blockPaste } from "../lib/utils";
-import { INPUT_BASE, INPUT_VARIANTS } from "./_constants";
+import { INPUT_BASE, INPUT_VARIANTS } from "./_styles";
 import type { FieldValues } from "react-hook-form";
 import type { CurrencyInputProps } from "./_types";
 import type { WithFieldWrapperProps } from "./withFieldWrapper";

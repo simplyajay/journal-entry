@@ -9,7 +9,7 @@ import {
   SelectGroup,
   SelectItem,
 } from "../ui/select";
-import { INPUT_BASE, INPUT_VARIANTS } from "./_constants";
+import { INPUT_BASE, INPUT_VARIANTS } from "./_styles";
 import { withFieldWrapper } from "./withFieldWrapper";
 import type { ControllerInputProps, SelectInputProps } from "./_types";
 import type { FieldValues } from "react-hook-form";
@@ -59,7 +59,7 @@ export const SelectInput = <T extends FieldValues>({
                 <SelectItem
                   key={option.value}
                   value={option.value}
-                  className="text-lg"
+                  className="text-sm"
                 >
                   {option.label}
                 </SelectItem>

@@ -7,7 +7,7 @@ import { Field } from "../ui/field";
 import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
-import { INPUT_BASE, INPUT_VARIANTS } from "./_constants";
+import { INPUT_BASE, INPUT_VARIANTS } from "./_styles";
 import type { ControllerInputProps } from "./_types";
 import type { FieldValues } from "react-hook-form";
 import type { WithFieldWrapperProps } from "./withFieldWrapper";
@@ -47,6 +47,7 @@ export const DatePicker = <T extends FieldValues>({
                 aria-invalid={!!errorMessage}
                 disabled={field.disabled}
                 className={clsx(
+                  "px-2 py-1",
                   INPUT_BASE,
                   "justify-start bg-transparent",
                   "data-[state=open]:text-muted-foreground",

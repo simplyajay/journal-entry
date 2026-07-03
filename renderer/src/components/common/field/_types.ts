@@ -1,4 +1,4 @@
-import { INPUT_VARIANTS } from "./_constants";
+import { INPUT_VARIANTS } from "./_styles";
 import type { InputHTMLAttributes } from "react";
 import type {
   FieldValues,
