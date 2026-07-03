@@ -1,4 +1,7 @@
 import React, { type ReactNode } from "react";
+import { X } from "lucide-react";
+import { Maximize } from "lucide-react";
+import { MinusIcon } from "lucide-react";
 
 type WindowProps = {
   children: ReactNode;
@@ -17,13 +20,19 @@ const AppWindow = ({ children }: WindowProps) => {
           className="flex gap-2 text-gray-800"
           style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
         >
-          <button onClick={() => window.api.minimize()}>—</button>
-          <button onClick={() => window.api.toggleMaximize()}>z</button>
-          <button onClick={() => window.api.close()}>✕</button>
+          <button onClick={() => window.api.window.minimize()}>
+            <MinusIcon className="hover:cursor-pointer" size={18} />
+          </button>
+          <button onClick={() => window.api.window.toggleMaximize()}>
+            <Maximize className="hover:cursor-pointer" size={15} />
+          </button>
+          <button onClick={() => window.api.window.close()}>
+            <X className="hover:cursor-pointer" size={18} />
+          </button>
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto bg-[#FAFAFA]">{children}</div>
+      <div className="flex-1 overflow-y-auto bg-[#FAFAFA]">{children}</div>
     </div>
   );
 };
