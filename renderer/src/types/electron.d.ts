@@ -1,6 +1,6 @@
 import type { LoginSchemaType } from "@/components/form/login/_schema";
 import type { JournalEntryVoucherDTO } from "@/components/form/jev/_types";
-import type { User } from "@/pages/AuthContext";
+import type { User } from "@/pages/contexts/AuthContext";
 
 export type IpcResult<T> =
   | { success: true; data: T }
