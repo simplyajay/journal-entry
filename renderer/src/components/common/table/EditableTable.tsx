@@ -87,7 +87,7 @@ export function EditableTable<
       className={`table-fixed ${disabled ? "bg-muted/10" : ""} rounded-b-lg`}
     >
       <TableHeaderBase>
-        <TableRow className="text-lg">
+        <TableRow className="text-sm">
           {columns.map((col) => (
             <TableHead
               key={String(col.name)}
@@ -115,10 +115,7 @@ export function EditableTable<
                   : (col.disabled ?? false);
 
                 return (
-                  <TableCell
-                    key={String(col.name)}
-                    className="p-2 align-top font-medium"
-                  >
+                  <TableCell key={String(col.name)} className="p-1 align-top">
                     <InputRenderer<TRow, TForm>
                       field={col}
                       fieldName={
