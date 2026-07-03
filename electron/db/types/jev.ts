@@ -33,6 +33,7 @@ export type AuditLogType = {
 
 export type JournalEntryVoucher = {
   id: string;
+  ownerId: string;
   journalType: JournalType;
   journalEntryVoucherNumber: string;
   journalEntryVoucherDate: Date;
