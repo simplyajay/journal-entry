@@ -1,6 +1,5 @@
 import { Database } from "node-sqlite3-wasm";
 import { app } from "electron";
-import bcrypt from "bcryptjs";
 import path from "path";
 
 let db: Database | null = null;
@@ -23,26 +22,36 @@ export const initializeDatabase = (): void => {
   console.log("[DB] Foreign keys enabled");
 
   createTables();
-  seedAdmin();
 
   console.log("[DB] Initialization complete");
 };
 
 const createTables = (): void => {
   getDb().exec(`
+
+    CREATE TABLE IF NOT EXISTS organizations (
+      id          TEXT PRIMARY KEY,
+      owner_id    TEXT NOT NULL,
+      name        TEXT NOT NULL UNIQUE COLLATE NOCASE,
+      created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
     CREATE TABLE IF NOT EXISTS users (
-      id           TEXT    PRIMARY KEY,
-      username     TEXT    NOT NULL UNIQUE,
-      password     TEXT    NOT NULL,
-      first_name   TEXT    NOT NULL,
-      middle_name  TEXT,
-      last_name    TEXT    NOT NULL,
-      position     TEXT    NOT NULL,
-      created_at   TEXT    NOT NULL DEFAULT (datetime('now'))
+      id                TEXT PRIMARY KEY,
+      organization_id   TEXT NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+      role              TEXT NOT NULL DEFAULT 'member',
+      username          TEXT NOT NULL UNIQUE,
+      password          TEXT NOT NULL,
+      first_name        TEXT NOT NULL,
+      middle_name       TEXT,
+      last_name         TEXT NOT NULL,
+      position          TEXT NOT NULL,
+      created_at        TEXT NOT NULL DEFAULT (datetime('now'))
     );
 
     CREATE TABLE IF NOT EXISTS journal_entries (
       id              TEXT PRIMARY KEY,
+      owner_id        TEXT NOT NULL REFERENCES organizations(id),
       journal_type    TEXT NOT NULL,
       jev_number      TEXT NOT NULL UNIQUE,
       jev_date        TEXT NOT NULL,
@@ -89,27 +98,9 @@ const createTables = (): void => {
       description TEXT,
       created_at  TEXT NOT NULL DEFAULT (datetime('now'))
     );
+
+
   `);
 
   console.log("[DB] Tables created (or already exist)");
-};
-
-const seedAdmin = (): void => {
-  const row = getDb().get("SELECT COUNT(*) as count FROM users") as {
-    count: number;
-  };
-
-  if (row.count > 0) {
-    console.log("[DB] Seed skipped — users table already has data");
-    return;
-  }
-
-  const adminPassword = bcrypt.hashSync("admin", 10);
-
-  getDb().run(
-    "INSERT INTO users (username, password, first_name, last_name, position) VALUES (?, ?, ?, ?, ?)",
-    ["admin", adminPassword, "admin", "admin", "administrator"],
-  );
-
-  console.log("[DB] Default admin user seeded (plaintext — replace before production)");
 };
