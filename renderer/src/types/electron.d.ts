@@ -1,31 +1,46 @@
 import type { LoginSchemaType } from "@/components/form/login/_schema";
 import type { JournalEntryVoucherDTO } from "@/components/form/jev/_types";
-import type { User } from "@/pages/protected/AuthContext";
+import type { User } from "@/pages/AuthContext";
 
-type IpcResult<T> = { success: true; data: T } | { success: false; error: string };
+export type IpcResult<T> =
+  | { success: true; data: T }
+  | { success: false; error: { type: "field"; message: string; field: string } }
+  | { success: false; error: { type: "general"; message: string } };
 
-interface ElectronAPI {
+interface WindowHandlers {
   minimize: () => void;
   toggleMaximize: () => void;
   close: () => void;
+}
+
+interface JevHandlers {
   createJev: (data: JournalEntryVoucherDTO) => Promise<IpcResult<number>>;
+}
 
-  auth: {
-    registerUser: (data: CreateUserDTO) => Promise<IpcResult<string>>;
-    getUser: (id: string) => Promise<IpcResult<User>>;
-    login: (data: LoginCredentials) => Promise<IpcResult<User>>;
-  };
+interface AuthHandlers {
+  getUser: (id: string) => Promise<IpcResult<User>>;
+  login: (data: LoginCredentials) => Promise<IpcResult<User>>;
+  logout: () => Promise<IpcResult<void>>;
+}
 
-  store: {
-    setSession: (id: string) => Promise<IpcResult<void>>;
-    getSession: () => Promise<
-      IpcResult<{
-        userId: string;
-        expiresAt: number;
-      } | null>
-    >;
-    clearSession: () => Promise<IpcResult<void>>;
-  };
+interface OrganizationHandlers {
+  createOrganization: (
+    data: CreateOriganizationDTO,
+  ) => Promise<IpcResult<string>>;
+}
+
+interface ElectronAPI {
+  window: WindowHandlers;
+  jev: JevHandlers;
+  auth: AuthHandlers;
+  org: OrganizationHandlers;
+
+  getSession: () => Promise<
+    IpcResult<{
+      userId: string;
+      expiresAt: number;
+    } | null>
+  >;
 }
 
 declare global {
