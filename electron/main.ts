@@ -1,21 +1,22 @@
 import path from "path";
 import { app, BrowserWindow, ipcMain, Menu } from "electron";
 import { initializeDatabase } from "./db/database";
-import { registerJevHandlers } from "./ipc/jev.handlers";
-import { registerAuthHandlers } from "./ipc/auth.handlers";
-import { registerStoreHandlers } from "./ipc/session.handler";
-import { registerWindowHandlers } from "./ipc/window.handlers";
+import { registerJevHandlers } from "./ipc/handlers/jev";
+import { registerAuthHandlers } from "./ipc/handlers/auth";
+import { registerStoreHandlers } from "./ipc/handlers/session";
+import { registerWindowHandlers } from "./ipc/handlers/window";
+import { registerOrganizationHandlers } from "./ipc/handlers/organization";
 
 let win: BrowserWindow;
 
 const createWindow = () => {
   win = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: 1204,
+    height: 768,
     minWidth: 1024,
-    minHeight: 800,
+    minHeight: 768,
     frame: false,
-    thickFrame: true,
+    titleBarStyle: "hidden",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
@@ -39,9 +40,10 @@ app.whenReady().then(async () => {
     return;
   }
 
-  registerJevHandlers();
   registerAuthHandlers();
   registerStoreHandlers();
+  registerOrganizationHandlers();
+  registerJevHandlers();
 
   createWindow();
 
