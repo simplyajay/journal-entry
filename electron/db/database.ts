@@ -99,6 +99,15 @@ const createTables = (): void => {
       created_at  TEXT NOT NULL DEFAULT (datetime('now'))
     );
 
+    CREATE TABLE IF NOT EXISTS login_history (
+    id          TEXT PRIMARY KEY,
+    user_id     TEXT REFERENCES users(id),
+    status      TEXT NOT NULL CHECK(status IN ('success', 'failed')),
+    reason      TEXT,
+    created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+    
+    )
+
 
   `);
 
