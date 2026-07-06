@@ -6,6 +6,7 @@ import { registerAuthHandlers } from "./ipc/handlers/auth";
 import { registerStoreHandlers } from "./ipc/handlers/session";
 import { registerWindowHandlers } from "./ipc/handlers/window";
 import { registerOrganizationHandlers } from "./ipc/handlers/organization";
+import { registerLogHandlers } from "./ipc/handlers/log";
 
 let win: BrowserWindow;
 
@@ -44,6 +45,7 @@ app.whenReady().then(async () => {
   registerStoreHandlers();
   registerOrganizationHandlers();
   registerJevHandlers();
+  registerLogHandlers();
 
   createWindow();
 
