@@ -1,8 +1,8 @@
 import clsx from "clsx";
-import AccountTab from "./AccountTab";
-import OrganizationTab from "./OrganizationTab";
-import GeneralTab from "./GeneralTab";
-import AuditLogTab from "./AuditLogTab";
+import AccountTab from "./tabs/account/AccountTab";
+import OrganizationTab from "./tabs/OrganizationTab";
+import GeneralTab from "./tabs/GeneralTab";
+import AuditLogTab from "./tabs/AuditLogTab";
 import {
   Dialog,
   DialogContent,
@@ -40,7 +40,7 @@ const SettingsDialog = () => {
   const { settingsDialogOpen, setSettingsDialogOpen } = useMain();
   return (
     <Dialog open={settingsDialogOpen} onOpenChange={setSettingsDialogOpen}>
-      <DialogContent className="gap-0 p-0 sm:max-w-225">
+      <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-175">
         <DialogHeader className="border-b p-4">
           <DialogTitle>Settings</DialogTitle>
         </DialogHeader>
@@ -64,7 +64,9 @@ const SettingsDialog = () => {
               </button>
             ))}
           </div>
-          <div className="flex-1 border-l p-2">{tabMap[activeTab]}</div>
+          <div className="h-full flex-1 overflow-y-auto border-l p-2">
+            {tabMap[activeTab]}
+          </div>
         </div>
       </DialogContent>
     </Dialog>
