@@ -20,7 +20,8 @@ import {
 } from "../ui/dropdown-menu";
 import { useMain } from "@/pages/contexts/MainLayoutContext";
 
-const items = [
+type SidebarItem = { title: string; url: string; icon: React.ElementType };
+const items: SidebarItem[] = [
   { title: "Dashboard", url: "jev/dashboard", icon: LayoutDashboard },
   { title: "New JEV", url: "jev/create", icon: SquarePen },
   { title: "Journal Entries", url: "jev/list", icon: List },
@@ -36,7 +37,7 @@ const Sidebar = () => {
 
   return (
     <div
-      className="bg-sidebar/50 relative flex h-full shrink-0 flex-col overflow-hidden border-r text-gray-700 transition-[width] duration-200 ease-linear"
+      className="bg-sidebar/30 relative flex h-full shrink-0 flex-col overflow-hidden border-r text-gray-700 transition-[width] duration-200 ease-linear"
       style={{ width: collapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH }}
     >
       <div className="flex h-14 shrink-0 items-center px-2">
@@ -125,9 +126,9 @@ const Sidebar = () => {
           >
             <DropdownMenuLabel>{user?.username}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="hover:cursor-pointer">
+            <DropdownMenuItem>
               <button
-                className="flex w-full items-center gap-2 p-1"
+                className="flex w-full items-center gap-2 p-1 hover:cursor-pointer"
                 onClick={() => setSettingsDialogOpen(true)}
               >
                 <Settings className="size-4" />
