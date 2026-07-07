@@ -7,7 +7,7 @@ import JevForm from "./components/form/jev/JevForm";
 import Dashboard from "./components/dashboard/Dashboard";
 import List from "./components/list/List";
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "./pages/AuthContext";
+import { AuthProvider } from "./pages/contexts/AuthContext";
 
 const App = () => {
   return (

@@ -1,7 +1,7 @@
 import { useLoginForm } from "./useLoginForm";
 import { LabeledTextInput } from "@/components/common/field/TextInput";
 import { Button } from "@/components/common/ui/button";
-import { useAuth } from "@/pages/AuthContext";
+import { useAuth } from "@/pages/contexts/AuthContext";
 import { Loader2 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 

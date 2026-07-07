@@ -1,6 +1,7 @@
 import type { LoginSchemaType } from "@/components/form/login/_schema";
 import type { JournalEntryVoucherDTO } from "@/components/form/jev/_types";
-import type { User } from "@/pages/AuthContext";
+import type { User } from "./user";
+import type { LoginHistory } from "./log";
 
 export type IpcResult<T> =
   | { success: true; data: T }
@@ -15,6 +16,10 @@ interface WindowHandlers {
 
 interface JevHandlers {
   createJev: (data: JournalEntryVoucherDTO) => Promise<IpcResult<number>>;
+}
+
+interface LogHandlers {
+  getLoginHistory: (userId: string) => Promise<IpcResult<LoginHistory[]>>;
 }
 
 interface AuthHandlers {
@@ -34,6 +39,7 @@ interface ElectronAPI {
   jev: JevHandlers;
   auth: AuthHandlers;
   org: OrganizationHandlers;
+  log: LogHandlers;
 
   getSession: () => Promise<
     IpcResult<{

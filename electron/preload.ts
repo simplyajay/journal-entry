@@ -4,6 +4,7 @@ import type { AuthStoreSchema, IpcResult } from "./ipc/types";
 import type { LoginCredentials } from "./db/types/auth";
 import type { CreateOriganizationDTO } from "./db/types/organization";
 import type { UserDTO } from "./db/types/user";
+import { LoginHistoryDTO } from "./db/types/log";
 
 type WindowHandlers = {
   minimize: () => void;
@@ -13,6 +14,10 @@ type WindowHandlers = {
 
 type JevHandlers = {
   createJev: (data: CreateJournalEntryVoucherDTO) => Promise<IpcResult<string>>;
+};
+
+type LogHandlers = {
+  getLoginHistory: (userId: string) => Promise<IpcResult<LoginHistoryDTO[]>>;
 };
 
 type AuthHandlers = {
@@ -30,6 +35,7 @@ export type ElectronAPI = {
   jev: JevHandlers;
   auth: AuthHandlers;
   org: OrganizationHandlers;
+  log: LogHandlers;
 
   getSession: () => Promise<IpcResult<AuthStoreSchema["session"] | null>>;
 };
@@ -55,6 +61,10 @@ contextBridge.exposeInMainWorld("api", {
   org: {
     createOrganization: (data: CreateOriganizationDTO) =>
       ipcRenderer.invoke("organization:create", data),
+  },
+
+  log: {
+    getLoginHistory: (userId: string) => ipcRenderer.invoke("login-history:get", userId),
   },
 
   getSession: () => ipcRenderer.invoke("session:get"),
