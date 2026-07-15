@@ -1,8 +1,9 @@
-import bcrypt from "bcryptjs";
 import { getDb } from "../database";
 import { v7 as uuidv7 } from "uuid";
 import { FieldError } from "../error";
 import type { CreateOriganizationDTO } from "../types/organization";
+import { createUser } from "./user";
+import { CreateUserDTO } from "../types/user";
 
 export const createOrganization = (data: CreateOriganizationDTO): string => {
   const db = getDb();
@@ -12,30 +13,17 @@ export const createOrganization = (data: CreateOriganizationDTO): string => {
   try {
     const organizationId = uuidv7();
     const userId = uuidv7();
-    const hashedPassword = bcrypt.hashSync(data.password, 10);
+    const { organizationName, ...partialUserData } = data;
+
+    const userData: CreateUserDTO = { ...partialUserData, organizationId, role: "owner" };
 
     db.run(`INSERT INTO organizations (id, owner_id, name) VALUES (?, ?, ?)`, [
       organizationId,
       userId,
-      data.organizationName,
+      organizationName,
     ]);
 
-    db.run(
-      `INSERT INTO users (
-       id, organization_id, role, username, password, first_name, middle_name, last_name, position
-       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        userId,
-        organizationId,
-        "owner",
-        data.username,
-        hashedPassword,
-        data.firstName,
-        data.middleName ?? null,
-        data.lastName,
-        data.position,
-      ],
-    );
+    createUser({ db, userId, userData });
 
     db.exec("COMMIT");
 
