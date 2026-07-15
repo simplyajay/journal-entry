@@ -9,9 +9,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/common/ui/dialog";
+import {
+  SettingsDialogProvider,
+  useSettingsDialog,
+} from "./SettingsDialogContext";
 import { useMain } from "@/pages/contexts/MainLayoutContext";
 import { useState } from "react";
 import { User, Users, Settings, LucideNotebookText } from "lucide-react";
+import { Button } from "../../ui/button";
+import ActionDialog from "../ActionDialog";
 
 type Tab = "account" | "organization" | "general" | "auditlog";
 
@@ -36,8 +42,18 @@ const tabMap: Record<Tab, React.ReactNode> = {
 };
 
 const SettingsDialog = () => {
+  return (
+    <SettingsDialogProvider>
+      <SettingsDialogContent />
+    </SettingsDialogProvider>
+  );
+};
+
+const SettingsDialogContent = () => {
   const [activeTab, setActiveTab] = useState<Tab>("account");
   const { settingsDialogOpen, setSettingsDialogOpen } = useMain();
+  const { dialog, action } = useSettingsDialog();
+
   return (
     <Dialog open={settingsDialogOpen} onOpenChange={setSettingsDialogOpen}>
       <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-175">
@@ -68,6 +84,26 @@ const SettingsDialog = () => {
             {tabMap[activeTab]}
           </div>
         </div>
+        <ActionDialog
+          isOpen={dialog.show}
+          onOpenChange={(open) => {
+            if (!open) {
+              action({ type: "close" });
+            }
+          }}
+          dialogTitle={dialog.title}
+          dialogDescription={dialog.description}
+          dialogFooter={
+            <Button
+              onClick={dialog.onConfirm}
+              disabled={!dialog.onConfirm}
+              type="button"
+              variant="secondary"
+            >
+              {dialog.confirmLabel}
+            </Button>
+          }
+        />
       </DialogContent>
     </Dialog>
   );
