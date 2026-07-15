@@ -15,4 +15,16 @@ export type User = {
 
 export type CreateUserDTO = Omit<User, "id" | "createdAt">;
 
+export type UpdateUserProfileDTO = Partial<
+  Omit<User, "id" | "createdAt" | "organizationId" | "password" | "role" | "username">
+>;
+
+export type UpdateUserAccountDTO = {
+  username: string;
+  currentPassword: string;
+  newPassword?: string;
+};
+
+export type UpdateUserRoleDTO = {};
+
 export type UserDTO = Omit<User, "password">;
