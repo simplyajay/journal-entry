@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
 import { getDb } from "../database";
+import { insertLoginHistory } from "./log";
 import type { LoginCredentials } from "../types/auth";
 import type { User, UserDTO } from "../types/user";
-import { insertLoginHistory } from "./log";
 
 export const loginUser = (data: LoginCredentials): UserDTO => {
   const db = getDb();
@@ -29,20 +29,4 @@ export const loginUser = (data: LoginCredentials): UserDTO => {
 
   insertLoginHistory(db, user.id, "success");
   return userDTO;
-};
-
-export const getUserById = (id: string): UserDTO => {
-  const db = getDb();
-
-  const user = db.get(
-    `SELECT id, username, first_name AS firstName, 
-              middle_name AS middleName, last_name AS lastName, 
-              position, created_at AS createdAt 
-       FROM users WHERE id = ?`,
-    [id],
-  ) as UserDTO | null;
-
-  if (!user) throw new Error("User not found.");
-
-  return user;
 };
