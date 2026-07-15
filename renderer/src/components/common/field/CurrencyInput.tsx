@@ -57,6 +57,7 @@ export const CurrencyInput = <T extends FieldValues>({
           className={clsx(INPUT_BASE, INPUT_VARIANTS[variant], className)}
           inputMode="decimal"
           placeholder={placeholder}
+          spellCheck={false}
           aria-invalid={!!errorMessage}
           disabled={disabled}
           value={displayValue}

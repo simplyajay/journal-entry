@@ -28,6 +28,7 @@ export const TextArea = <T extends FieldValues>({
       {...register(fieldName)}
       disabled={disabled}
       aria-invalid={!!errorMessage}
+      spellCheck={false}
       className={clsx(
         INPUT_BASE,
         INPUT_VARIANTS[variant],

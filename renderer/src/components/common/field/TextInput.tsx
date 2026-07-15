@@ -30,6 +30,7 @@ export const TextInput = <T extends FieldValues>({
       className={clsx(INPUT_BASE, INPUT_VARIANTS[variant], className, {
         "bg-muted": disabled,
       })}
+      spellCheck={false}
       aria-invalid={!!errorMessage}
       placeholder={placeholder}
       onFocus={onFocus}
