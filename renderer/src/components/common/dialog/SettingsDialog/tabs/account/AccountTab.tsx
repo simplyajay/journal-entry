@@ -1,6 +1,6 @@
 import {
-  AccountForm,
-  ProfileForm,
+  AccountInformationForm,
+  ProfileInformationForm,
 } from "@/components/form/account/AccountForms";
 import { useAuth } from "@/pages/contexts/AuthContext";
 import type { LoginHistory } from "@/types/log";
@@ -39,7 +39,7 @@ const AccountTab = () => {
           PROFILE
         </label>
         <div className="w-full">
-          <ProfileForm />
+          <ProfileInformationForm />
         </div>
       </div>
       <div className={sectionClass}>
@@ -47,7 +47,7 @@ const AccountTab = () => {
           ACCOUNT
         </label>
         <div className="w-full">
-          <AccountForm />
+          <AccountInformationForm />
         </div>
       </div>
       <div className={sectionClass}>
