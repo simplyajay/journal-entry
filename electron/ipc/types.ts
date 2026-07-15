@@ -6,6 +6,7 @@ export type IpcResult<T> =
 export type AuthStoreSchema = {
   session: {
     userId: string;
+    organizationId: string;
     expiresAt: number;
   } | null;
 };
