@@ -26,19 +26,4 @@ export const registerStoreHandlers = (): void => {
       };
     }
   });
-
-  ipcMain.handle("session:clear", (): IpcResult<void> => {
-    try {
-      store.delete("session");
-      return { success: true, data: undefined };
-    } catch (err) {
-      return {
-        success: false,
-        error: {
-          type: "general",
-          message: err instanceof Error ? err.message : "Unexpected error",
-        },
-      };
-    }
-  });
 };
