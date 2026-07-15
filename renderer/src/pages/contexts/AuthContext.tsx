@@ -5,6 +5,7 @@ import type { LoginSchemaType } from "@/components/form/login/_schema";
 
 type AuthContextValue = {
   currentUser: User | null;
+  setCurrentUser: (user: User | null) => void;
   login: (data: LoginSchemaType) => Promise<void>;
   logout: () => Promise<void>;
   sessionLoading: boolean;
@@ -32,7 +33,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         if (!session.data) return;
 
-        const result = await window.api.auth.getUser(session.data.userId);
+        const result = await window.api.org.getUser(session.data.userId);
 
         if (result.success) setCurrentUser(result.data);
       } finally {
@@ -62,15 +63,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = async () => {
     const result = await window.api.auth.logout();
 
-    if (result.success) setCurrentUser(null);
-
-    navigate("/");
+    if (result.success) {
+      setCurrentUser(null);
+      navigate("/");
+    }
   };
 
   return (
     <AuthContext.Provider
       value={{
         currentUser,
+        setCurrentUser,
         login,
         logout,
         sessionLoading,
