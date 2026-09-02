@@ -1,13 +1,45 @@
+import DataTable from "@/components/common/table/DataTable";
 import {
   AccountInformationForm,
   ProfileInformationForm,
 } from "@/components/form/account/AccountForms";
 import { useAuth } from "@/pages/contexts/AuthContext";
-import type { LoginHistory } from "@/types/log";
 import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
+import type { DataTableColumn } from "@/components/common/table/DataTable";
+import type { LoginHistory } from "@/types/log";
 
 const sectionClass = "flex flex-col gap-4 border-b py-4";
 const labelClass = "font-manrope text-xs font-bold text-gray-500";
+
+const columns: DataTableColumn<LoginHistory>[] = [
+  {
+    label: "Date",
+    name: "createdAt",
+    render: (row) => new Date(row.createdAt).toLocaleString(),
+  },
+  {
+    label: "Status",
+    name: "status",
+    render: (row) => (
+      <span
+        className={
+          row.status === "success"
+            ? "text-green-600"
+            : row.status === "failed"
+              ? "text-red-600"
+              : ""
+        }
+      >
+        {row.status}
+      </span>
+    ),
+  },
+  {
+    label: "Reason",
+    name: "reason",
+  },
+];
 
 const AccountTab = () => {
   const { currentUser } = useAuth();
@@ -55,27 +87,17 @@ const AccountTab = () => {
           LOGIN HISTORY
         </label>
         {loading ? (
-          <div className="w-full bg-red-500">Loading</div>
+          <div className="flex w-full items-center justify-center">
+            <Loader2 className="mr-2 size-6 animate-spin text-gray-400" />
+          </div>
         ) : (
           <div className="w-full">
-            <table>
-              <thead>
-                <tr>
-                  <th>Date - Time</th>
-                  <th>Status</th>
-                  <th>Reason</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loginHistory.map((data) => (
-                  <tr key={data.id}>
-                    <td>{new Date(data.createdAt).toLocaleString()}</td>
-                    <td>{data.status}</td>
-                    <td>{data.reason ?? "—"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <DataTable<LoginHistory>
+              columns={columns}
+              getRowId={(row) => row.id}
+              rows={loginHistory}
+              noBorder
+            />
           </div>
         )}
       </div>
