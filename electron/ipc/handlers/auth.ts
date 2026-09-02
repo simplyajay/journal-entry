@@ -15,8 +15,7 @@ export const registerAuthHandlers = (): void => {
       const ONE_HOUR = 60 * 60 * 1000;
 
       store.set("session", {
-        userId: user.id,
-        organizationId: user.organizationId,
+        user,
         expiresAt: Date.now() + ONE_HOUR,
       });
 
