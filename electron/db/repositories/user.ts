@@ -19,10 +19,11 @@ export const getUserById = (id: string): UserDTO => {
   const db = getDb();
 
   const user = db.get(
-    `SELECT id, username, first_name AS firstName, 
-              middle_name AS middleName, last_name AS lastName, 
-              position, created_at AS createdAt 
-       FROM users WHERE id = ?`,
+    `SELECT id, username, organization_id as organizationId,
+    first_name AS firstName, 
+    middle_name AS middleName, last_name AS lastName, 
+    position, created_at AS createdAt 
+    FROM users WHERE id = ?`,
     [id],
   ) as UserDTO | null;
 
