@@ -1,5 +1,11 @@
 import { contextBridge, ipcRenderer } from "electron";
-import type { CreateJournalEntryVoucherDTO } from "./db/types/jev";
+import type {
+  CreateJournalEntryVoucherDTO,
+  getJevSummariesByOwnerParams,
+  PaginatedJevSummaries,
+  PaginationParams,
+  searchJevSummariesByOwnerParams,
+} from "./db/types/jev";
 import type { AuthStoreSchema, IpcResult } from "./ipc/types";
 import type { LoginCredentials } from "./db/types/auth";
 import type { CreateOriganizationDTO } from "./db/types/organization";
@@ -37,6 +43,13 @@ type UserHandlers = {
 
 type JevHandlers = {
   createJev: (data: CreateJournalEntryVoucherDTO) => Promise<IpcResult<string>>;
+  getJevSummaries: (
+    data: getJevSummariesByOwnerParams,
+  ) => Promise<IpcResult<PaginatedJevSummaries>>;
+  searchJevSummaries: (
+    data: searchJevSummariesByOwnerParams,
+  ) => Promise<IpcResult<PaginatedJevSummaries>>;
+  getJevYears: (data: { ownerId: string }) => Promise<IpcResult<number[]>>;
 };
 
 export type ElectronAPI = {
@@ -82,6 +95,11 @@ contextBridge.exposeInMainWorld("api", {
   jev: {
     createJev: (data: CreateJournalEntryVoucherDTO) =>
       ipcRenderer.invoke("jev:create", data),
+    getJevSummaries: (data: getJevSummariesByOwnerParams) =>
+      ipcRenderer.invoke("jev:get-jev-summary", data),
+    searchJevSummaries: (data: searchJevSummariesByOwnerParams) =>
+      ipcRenderer.invoke("jev:search-jev-summary", data),
+    getJevYears: (data: { ownerId: string }) => ipcRenderer.invoke("jev:get-years", data),
   },
 
   getSession: () => ipcRenderer.invoke("session:get"),
