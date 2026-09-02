@@ -1,10 +1,10 @@
-import DataTable from "../common/table/DataTable";
+import DataTable from "../../../components/common/table/DataTable";
 import SearchDialog from "./search/SearchDialog";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/pages/contexts/AuthContext";
 import { journalTypeMap, months } from "./_constant";
-import { Trash2, Edit, ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "../common/ui/button";
+import { Trash2, Edit, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { Button } from "../../../components/common/ui/button";
 import {
   Select,
   SelectContent,
@@ -12,11 +12,11 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../common/ui/select";
-import { X } from "lucide-react";
-import type { JournalEntryVoucherSummary } from "../form/jev/_types";
-import type { DataTableColumn } from "../common/table/DataTable";
-import { toDateOnly, type JEVSearchSchemaType } from "./search/_schema";
+} from "../../../components/common/ui/select";
+import { toDateOnly } from "./search/_schema";
+import type { JournalEntryVoucherSummary } from "../form/_types";
+import type { DataTableColumn } from "../../../components/common/table/DataTable";
+import type { JEVSearchSchemaType } from "./search/_schema";
 
 const columns: DataTableColumn<JournalEntryVoucherSummary>[] = [
   {

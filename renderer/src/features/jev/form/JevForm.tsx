@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Button } from "../../common/ui/button";
+import { Button } from "@/components/common/ui/button";
 import { accountingEntriesDefaultValues, useJevForm } from "./useJevForm";
 import { useWatch } from "react-hook-form";
 import { JevFormProvider } from "./JevFormContext";

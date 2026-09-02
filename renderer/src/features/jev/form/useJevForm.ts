@@ -1,8 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { JournalEntrySchema } from "@/components/form/jev/_schema";
+import { JournalEntrySchema } from "./_schema";
 import type { SubmitHandler } from "react-hook-form";
-import type { JournalEntrySchemaType } from "@/components/form/jev/_schema";
+import type { JournalEntrySchemaType } from "./_schema";
 import type { JournalEntryVoucherDTO } from "./_types";
 import { useAuth } from "@/pages/contexts/AuthContext";
 import { useState } from "react";

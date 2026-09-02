@@ -1,7 +1,7 @@
 import { useJevFormContext } from "../JevFormContext";
-import { ckdj_cdjSectionFields } from "@/components/form/jev/_fields";
+import { ckdj_cdjSectionFields } from "../_fields";
 import { FORM_SECTION_CLASS } from "../JevForm";
-import { InputRenderer } from "../../../common/field/RHFInputRenderer";
+import { InputRenderer } from "@/components/common/field/RHFInputRenderer";
 
 const CkdjCdjSection = () => {
   const { form, journalType } = useJevFormContext();

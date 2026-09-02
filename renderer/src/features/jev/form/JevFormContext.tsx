@@ -1,7 +1,7 @@
 import React, { createContext, useContext } from "react";
 import { useWatch, type UseFormReturn } from "react-hook-form";
-import type { JournalEntrySchemaType } from "@/components/form/jev/_schema";
-import type { JournalType } from "@/components/form/jev/_types";
+import type { JournalEntrySchemaType } from "./_schema";
+import type { JournalType } from "./_types";
 
 type JevFormContextType = {
   form: UseFormReturn<JournalEntrySchemaType>;

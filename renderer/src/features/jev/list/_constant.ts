@@ -1,4 +1,4 @@
-import type { JournalType } from "../form/jev/_types";
+import type { JournalType } from "../form/_types";
 import type { SelectMonth } from "./_types";
 
 export const journalTypeMap: Record<JournalType, string> = {

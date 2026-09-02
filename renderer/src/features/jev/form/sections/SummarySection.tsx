@@ -1,5 +1,5 @@
 import { useJevFormContext } from "../JevFormContext";
-import { summarySectionFields } from "@/components/form/jev/_fields";
+import { summarySectionFields } from "../_fields";
 import { FORM_SECTION_CLASS } from "../JevForm";
 import { InputRenderer } from "@/components/common/field/RHFInputRenderer";
 

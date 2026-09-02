@@ -3,9 +3,9 @@ import Redirector from "./pages/Redirector";
 import MainLayout from "./pages/MainLayout";
 import LoginPage from "./pages/LoginPage";
 import SetupPage from "./pages/SetupPage";
-import JevForm from "./components/form/jev/JevForm";
-import Dashboard from "./components/dashboard/Dashboard";
-import List from "./components/list/List";
+import JevForm from "./features/jev/form/JevForm";
+import Dashboard from "./features/dashboard/Dashboard";
+import List from "./features/jev/list/List";
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./pages/contexts/AuthContext";
 

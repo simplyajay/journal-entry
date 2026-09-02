@@ -1,8 +1,6 @@
 import DataTable from "@/components/common/table/DataTable";
-import {
-  AccountInformationForm,
-  ProfileInformationForm,
-} from "@/components/form/account/AccountForms";
+import { AccountInformationForm } from "./AccountForms";
+import { ProfileInformationForm } from "./AccountForms";
 import { useAuth } from "@/pages/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
@@ -41,7 +39,7 @@ const columns: DataTableColumn<LoginHistory>[] = [
   },
 ];
 
-const AccountTab = () => {
+const Account = () => {
   const { currentUser } = useAuth();
   const [loginHistory, setLoginHistory] = useState<LoginHistory[]>([]);
   const [loading, setLoading] = useState(false);
@@ -105,4 +103,4 @@ const AccountTab = () => {
   );
 };
 
-export default AccountTab;
+export default Account;

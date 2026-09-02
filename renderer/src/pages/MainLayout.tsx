@@ -1,5 +1,5 @@
 import Sidebar2 from "@/components/common/sidebar/Sidebar";
-import SettingsDialog from "@/components/common/dialog/SettingsDialog/SettingsDialog";
+import SettingsDialog from "@/features/settings/dialog/SettingsDialog";
 import { Outlet } from "react-router-dom";
 import { MainProvider } from "./contexts/MainLayoutContext";
 

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { User } from "@/types/user";
-import type { LoginSchemaType } from "@/components/form/login/_schema";
+import type { LoginSchemaType } from "@/features/login/_schema";
 
 type AuthContextValue = {
   currentUser: User | null;

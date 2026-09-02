@@ -1,8 +1,8 @@
 import clsx from "clsx";
-import AccountTab from "./tabs/account/AccountTab";
-import OrganizationTab from "./tabs/OrganizationTab";
-import GeneralTab from "./tabs/GeneralTab";
-import AuditLogTab from "./tabs/AuditLogTab";
+import Account from "../tabs/account/Account";
+import OrganizationTab from "../tabs/OrganizationTab";
+import GeneralTab from "../tabs/GeneralTab";
+import AuditLogTab from "../tabs/AuditLogTab";
 import {
   Dialog,
   DialogContent,
@@ -16,8 +16,8 @@ import {
 import { useMain } from "@/pages/contexts/MainLayoutContext";
 import { useState } from "react";
 import { User, Users, Settings, LucideNotebookText } from "lucide-react";
-import { Button } from "../../ui/button";
-import ActionDialog from "../ActionDialog";
+import { Button } from "../../../components/common/ui/button";
+import ActionDialog from "../../../components/common/dialog/ActionDialog";
 
 type Tab = "account" | "organization" | "general" | "auditlog";
 
@@ -35,7 +35,7 @@ const sidebarItems: SidebarItem[] = [
 ];
 
 const tabMap: Record<Tab, React.ReactNode> = {
-  account: <AccountTab />,
+  account: <Account />,
   organization: <OrganizationTab />,
   general: <GeneralTab />,
   auditlog: <AuditLogTab />,

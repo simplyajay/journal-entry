@@ -1,6 +1,6 @@
 import { useJevFormContext } from "../JevFormContext";
 import { FORM_SECTION_CLASS } from "../JevForm";
-import { getJournalSectionFields } from "@/components/form/jev/_fields";
+import { getJournalSectionFields } from "../_fields";
 import { InputRenderer } from "@/components/common/field/RHFInputRenderer";
 
 const JournalSection = () => {

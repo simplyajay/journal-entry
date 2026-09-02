@@ -5,7 +5,7 @@ import {
   personalInfoSection,
   roleSection,
 } from "./_fields";
-import { InputRenderer } from "../../common/field/RHFInputRenderer";
+import { InputRenderer } from "../../components/common/field/RHFInputRenderer";
 import { NavLink } from "react-router-dom";
 import { Button } from "@/components/common/ui/button";
 import { Loader2 } from "lucide-react";
@@ -47,7 +47,7 @@ const FormSection = ({ label, fields, form }: FormSectionProps) => {
   );
 };
 
-const CreateOrganizationForm = () => {
+const SetupForm = () => {
   const {
     form,
     onSubmit,
@@ -155,4 +155,4 @@ const CreateOrganizationForm = () => {
   );
 };
 
-export default CreateOrganizationForm;
+export default SetupForm;

@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import { EditableTable } from "@/components/common/table/EditableTable";
 import { useFieldArray } from "react-hook-form";
-import { getSupportingDocumentSectionFields } from "@/components/form/jev/_fields";
+import { getSupportingDocumentSectionFields } from "../_fields";
 import { useJevFormContext } from "../JevFormContext";
 import type {
   JournalEntrySchemaType,
   SupportingDocumentSchemaType,
-} from "@/components/form/jev/_schema";
+} from "../_schema";
 
 const DocumentsSection = () => {
   const { form, journalType } = useJevFormContext();

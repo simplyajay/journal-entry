@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { AccountSchema, ProfileSchema } from "./_schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@/pages/contexts/AuthContext";
-import { useSettingsDialog } from "@/components/common/dialog/SettingsDialog/SettingsDialogContext";
+import { useSettingsDialog } from "@/features/settings/dialog/SettingsDialogContext";
 import type { AccountSchemaType, ProfileSchemaType } from "./_schema";
 import type { DefaultValues, FieldValues, Resolver } from "react-hook-form";
 import type { User } from "@/types/user";
