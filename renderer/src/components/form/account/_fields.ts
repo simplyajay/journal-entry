@@ -1,7 +1,7 @@
 import type { InputField } from "@/components/common/field/_types";
 import type { AccountSchemaType, ProfileSchemaType } from "./_schema";
 
-export const profileFormFormds = (
+export const profileFormFields = (
   loading: boolean,
 ): InputField<ProfileSchemaType>[] => [
   {

@@ -6,11 +6,11 @@ import { getAccountEntrySectionFields } from "../_fields";
 import { useJevFormContext } from "../JevFormContext";
 import { formatNumber } from "@/components/common/lib/utils";
 import type { AccountEntry } from "@/components/form/jev/_types";
-import type { TableColumn } from "@/components/common/table/EditableTable";
 import type {
   AccountingEntrySchemaType,
   JournalEntrySchemaType,
 } from "@/components/form/jev/_schema";
+import { toCents } from "../_lib";
 
 const defaultAccountEntry: AccountEntry = {
   accountCode: "",
@@ -38,25 +38,20 @@ const AccountsSection = () => {
   const accountSectionFields = getAccountEntrySectionFields(journalType);
 
   const totals = useMemo(() => {
-    return (
-      accountingEntries?.reduce(
-        (acc, entry) => {
-          const debit =
-            typeof entry.debit === "number" && !isNaN(entry.debit)
-              ? entry.debit
-              : 0;
-          const credit =
-            typeof entry.credit === "number" && !isNaN(entry.credit)
-              ? entry.credit
-              : 0;
-          return {
-            debit: acc.debit + debit,
-            credit: acc.credit + credit,
-          };
-        },
-        { debit: 0, credit: 0 },
-      ) ?? { debit: 0, credit: 0 }
-    );
+    const cents = accountingEntries?.reduce(
+      (acc, entry) => {
+        return {
+          debit: acc.debit + toCents(entry.debit),
+          credit: acc.credit + toCents(entry.credit),
+        };
+      },
+      { debit: 0, credit: 0 },
+    ) ?? { debit: 0, credit: 0 };
+
+    return {
+      debit: cents.debit / 100,
+      credit: cents.credit / 100,
+    };
   }, [accountingEntries]);
 
   const isNotBalance = totals.credit !== totals.debit;
@@ -78,9 +73,7 @@ const AccountsSection = () => {
       </div>
       <EditableTable<AccountingEntrySchemaType, JournalEntrySchemaType>
         name="accountingEntries"
-        columns={
-          accountSectionFields as TableColumn<AccountingEntrySchemaType>[]
-        }
+        columns={accountSectionFields}
         fields={accountEntries}
         form={form}
         append={appendAccount}

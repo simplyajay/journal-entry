@@ -31,6 +31,7 @@ export const NumberInput = <T extends FieldValues>({
         "bg-muted": disabled,
       })}
       inputMode="decimal"
+      spellCheck={false}
       type="number"
       aria-invalid={!!errorMessage}
       placeholder={placeholder}

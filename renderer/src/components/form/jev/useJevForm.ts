@@ -4,8 +4,29 @@ import { JournalEntrySchema } from "@/components/form/jev/_schema";
 import type { SubmitHandler } from "react-hook-form";
 import type { JournalEntrySchemaType } from "@/components/form/jev/_schema";
 import type { JournalEntryVoucherDTO } from "./_types";
+import { useAuth } from "@/pages/contexts/AuthContext";
+import { useState } from "react";
+
+export const accountingEntriesDefaultValues = [
+  {
+    accountCode: "",
+    accountName: "",
+    debit: undefined,
+    credit: undefined,
+  },
+  {
+    accountCode: "",
+    accountName: "",
+    debit: undefined,
+    credit: undefined,
+  },
+];
 
 export const useJevForm = () => {
+  const { currentUser } = useAuth();
+  const [showDialog, setShowDialog] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const form = useForm<JournalEntrySchemaType>({
     resolver: zodResolver(JournalEntrySchema),
     mode: "onSubmit",
@@ -13,35 +34,50 @@ export const useJevForm = () => {
     shouldFocusError: false,
     defaultValues: {
       journalType: undefined,
-      accountingEntries: [
-        {
-          accountCode: "",
-          accountName: "",
-          debit: undefined,
-          credit: undefined,
-        },
-        {
-          accountCode: "",
-          accountName: "",
-          debit: undefined,
-          credit: undefined,
-        },
-      ],
+      description: "",
+      journalEntryVoucherNumber: "",
+      accountingEntries: accountingEntriesDefaultValues,
     },
   });
 
+  const { reset, setError } = form;
+
   const onSubmit: SubmitHandler<JournalEntrySchemaType> = async (data) => {
+    setLoading(true);
+
+    if (!currentUser) {
+      console.error("[onSubmit] Failed to create JEV:", "Unauthorized");
+      return;
+    }
+
     const finalizedData: JournalEntryVoucherDTO = {
       ...data,
-      createdBy: "test",
+      createdBy: currentUser.id,
+      ownerId: currentUser.organizationId,
     };
+
     const result = await window.api.jev.createJev(finalizedData);
 
     if (result.success) {
-      console.log("[onSubmit] Created JEV, id:", result.data);
+      setShowDialog(true);
+      reset({
+        journalType: undefined,
+        description: "",
+        journalEntryVoucherNumber: "",
+        accountingEntries: accountingEntriesDefaultValues,
+      });
     } else {
+      if (
+        result.error.type === "field" &&
+        result.error.field === "journalEntryVoucherNumber"
+      ) {
+        setError(result.error.field, { message: result.error.message });
+        scrollToFirstError();
+      }
       console.error("[onSubmit] Failed to create JEV:", result.error);
     }
+
+    setLoading(false);
   };
 
   const scrollToFirstError = () => {
@@ -64,5 +100,12 @@ export const useJevForm = () => {
     }, 0);
   };
 
-  return { onSubmit, form, scrollToFirstError };
+  return {
+    onSubmit,
+    form,
+    scrollToFirstError,
+    showDialog,
+    setShowDialog,
+    loading,
+  };
 };

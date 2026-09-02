@@ -20,7 +20,7 @@ import type {
 import type { SelectOptions, InputType } from "../field/_types";
 import { InputRenderer } from "../field/RHFInputRenderer";
 
-export type TableColumn<TRow extends FieldValues> = {
+export type EditableTableColumn<TRow extends FieldValues> = {
   name: FieldPath<TRow>;
   label: string;
   type: InputType;
@@ -31,8 +31,8 @@ export type TableColumn<TRow extends FieldValues> = {
   getDisabled?: (row: TRow) => boolean;
 };
 
-type JevTableProps<TRow extends FieldValues, TForm extends FieldValues> = {
-  columns: TableColumn<TRow>[];
+type EditableTableProps<TRow extends FieldValues, TForm extends FieldValues> = {
+  columns: EditableTableColumn<TRow>[];
   fields: (TRow & { id: string })[];
   name: Path<TForm>;
   form: UseFormReturn<TForm>;
@@ -71,7 +71,7 @@ export function EditableTable<
   customErrorPaths,
   isOptional,
   disabled,
-}: JevTableProps<TRow, TForm>) {
+}: EditableTableProps<TRow, TForm>) {
   const { control, clearErrors } = form;
 
   const watchedFields = useWatch({ control, name });
@@ -115,7 +115,11 @@ export function EditableTable<
                   : (col.disabled ?? false);
 
                 return (
-                  <TableCell key={String(col.name)} className="p-1 align-top">
+                  <TableCell
+                    key={String(col.name)}
+                    className="p-1 align-top"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <InputRenderer<TRow, TForm>
                       field={col}
                       fieldName={

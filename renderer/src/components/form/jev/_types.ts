@@ -28,4 +28,22 @@ export type SupportingDocumentEntry = {
 
 export type JournalEntryVoucherDTO = JournalEntrySchemaType & {
   createdBy: string;
+  ownerId: string;
+};
+
+export type JournalEntryVoucherSummary = {
+  id: string;
+  journalType: JournalType;
+  journalEntryVoucherNumber: string;
+  journalEntryVoucherDate: Date;
+  description: string;
+  createdAt: Date;
+};
+
+export type PaginatedJevSummaries = {
+  items: JournalEntryVoucherSummary[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
 };

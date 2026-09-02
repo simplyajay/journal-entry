@@ -146,23 +146,18 @@ export const JournalEntrySchema = z
     { error: "Select Journal" },
   )
   .superRefine((data, ctx) => {
-    const totals = data.accountingEntries.reduce(
+    const toCents = (n: unknown): number =>
+      typeof n === "number" && !isNaN(n) ? Math.round(n * 100) : 0;
+
+    const totalsCents = data.accountingEntries.reduce(
       (acc, entry) => ({
-        debit:
-          acc.debit +
-          (typeof entry.debit === "number" && !isNaN(entry.debit)
-            ? entry.debit
-            : 0),
-        credit:
-          acc.credit +
-          (typeof entry.credit === "number" && !isNaN(entry.credit)
-            ? entry.credit
-            : 0),
+        debit: acc.debit + toCents(entry.debit),
+        credit: acc.credit + toCents(entry.credit),
       }),
       { debit: 0, credit: 0 },
     );
 
-    if (totals.debit !== totals.credit) {
+    if (totalsCents.debit !== totalsCents.credit) {
       ctx.addIssue({
         code: "custom",
         path: ["accountingEntries"],

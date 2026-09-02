@@ -1,11 +1,20 @@
-import type { LoginSchemaType } from "@/components/form/login/_schema";
-import type { JournalEntryVoucherDTO } from "@/components/form/jev/_types";
+import type {
+  JournalEntryVoucherDTO,
+  PaginatedJevSummaries,
+} from "@/components/form/jev/_types";
+import type {
+  AccountSchemaBaseType,
+  ProfileSchemaType,
+} from "@/components/form/account/_schema";
 import type { User } from "./user";
 import type { LoginHistory } from "./log";
 
 export type IpcResult<T> =
   | { success: true; data: T }
-  | { success: false; error: { type: "field"; message: string; field: string } }
+  | {
+      success: false;
+      error: { type: "field"; message: string; field: string };
+    }
   | { success: false; error: { type: "general"; message: string } };
 
 interface WindowHandlers {
@@ -14,36 +23,54 @@ interface WindowHandlers {
   close: () => void;
 }
 
-interface JevHandlers {
-  createJev: (data: JournalEntryVoucherDTO) => Promise<IpcResult<number>>;
+interface AuthHandlers {
+  login: (data: LoginCredentials) => Promise<IpcResult<User>>;
+  logout: () => Promise<IpcResult<void>>;
 }
 
 interface LogHandlers {
   getLoginHistory: (userId: string) => Promise<IpcResult<LoginHistory[]>>;
 }
 
-interface AuthHandlers {
-  getUser: (id: string) => Promise<IpcResult<User>>;
-  login: (data: LoginCredentials) => Promise<IpcResult<User>>;
-  logout: () => Promise<IpcResult<void>>;
-}
-
 interface OrganizationHandlers {
+  getUser: (id: string) => Promise<IpcResult<User>>;
   createOrganization: (
     data: CreateOriganizationDTO,
   ) => Promise<IpcResult<string>>;
 }
 
+interface UserHandlers {
+  updateUserProfile: (data: ProfileSchemaType) => Promise<IpcResult<User>>;
+  updateUserAccount: (data: AccountSchemaBaseType) => Promise<IpcResult<User>>;
+}
+
+interface JevHandlers {
+  createJev: (data: JournalEntryVoucherDTO) => Promise<IpcResult<number>>;
+  getJevSummaries: (data: {
+    ownerId: string;
+    pagination: { page: number; pageSize: number };
+    filter: { year: number; month: number };
+  }) => Promise<IpcResult<PaginatedJevSummaries>>;
+  searchJevSummaries: (data: {
+    ownerId: string;
+    keyword: string;
+    pagination: { page: number; pageSize: number };
+    dateRange: { from: string; to: string };
+  }) => Promise<IpcResult<PaginatedJevSummaries>>;
+  getJevYears: (data: { ownerId: string }) => Promise<IpcResult<number[]>>;
+}
+
 interface ElectronAPI {
   window: WindowHandlers;
-  jev: JevHandlers;
   auth: AuthHandlers;
-  org: OrganizationHandlers;
   log: LogHandlers;
+  org: OrganizationHandlers;
+  user: UserHandlers;
+  jev: JevHandlers;
 
   getSession: () => Promise<
     IpcResult<{
-      userId: string;
+      user: User;
       expiresAt: number;
     } | null>
   >;

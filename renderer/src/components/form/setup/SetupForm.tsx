@@ -12,6 +12,40 @@ import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import ActionDialog from "@/components/common/dialog/ActionDialog";
 import type { SetupSchemaType } from "./_schema";
+import type { InputField } from "@/components/common/field/_types";
+import type { UseFormReturn } from "react-hook-form";
+
+type FormSectionProps = {
+  form: UseFormReturn<SetupSchemaType>;
+  label: string;
+  fields: InputField<SetupSchemaType>[];
+};
+
+const FormSection = ({ label, fields, form }: FormSectionProps) => {
+  return (
+    <div className="flex w-full flex-1 flex-col gap-6">
+      <div className="flex w-full flex-col justify-evenly gap-2">
+        <label
+          htmlFor={`${label}-section-label`}
+          className="text-xs font-semibold text-gray-500"
+        >
+          {label}
+        </label>
+        <div className="flex w-full flex-col gap-2">
+          {fields.map((field, index) => {
+            return (
+              <InputRenderer<SetupSchemaType>
+                key={index}
+                field={field}
+                form={form}
+              />
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const CreateOrganizationForm = () => {
   const {
@@ -36,102 +70,37 @@ const CreateOrganizationForm = () => {
         className="flex flex-col gap-4 p-4"
         onFocus={() => setSetupError(undefined)}
       >
-        {/* TITLE */}
         <div className="flex w-full items-center justify-center py-4">
           <h1 className="font-manrope text-3xl text-gray-700">
             CREATE ORGANIZATION
           </h1>
         </div>
 
-        {/* FIELDS */}
-
         <div className="flex flex-1 items-start justify-center gap-8 p-2">
-          {/* SECTION */}
           <div className="flex w-full flex-1 flex-col gap-6">
-            <div className="flex w-full flex-col justify-evenly gap-2">
-              <label
-                htmlFor="organization-section-label"
-                className="text-xs font-semibold text-gray-500"
-              >
-                ORGANIZATION
-              </label>
-              <div className="flex w-full flex-col gap-2">
-                {organizationSection(loading).map((field, index) => {
-                  return (
-                    <InputRenderer<SetupSchemaType>
-                      key={index}
-                      field={field}
-                      form={form}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-            <div className="flex w-full flex-col gap-2">
-              <div className="flex w-full flex-col justify-evenly gap-2">
-                <label
-                  htmlFor="account-section-label"
-                  className="text-xs font-semibold text-gray-500"
-                >
-                  ACCOUNT
-                </label>
-                <div className="flex w-full flex-col gap-2">
-                  {accountSection(loading).map((field, index) => {
-                    return (
-                      <InputRenderer<SetupSchemaType>
-                        key={index}
-                        field={field}
-                        form={form}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
+            <FormSection
+              label="ORGANIZATION"
+              fields={organizationSection(loading)}
+              form={form}
+            />
+            <FormSection
+              label="ACCOUNT"
+              fields={accountSection(loading)}
+              form={form}
+            />
           </div>
 
-          {/* SECTION */}
           <div className="flex w-full flex-1 flex-col gap-6">
-            <div className="flex w-full flex-col gap-2">
-              <div className="flex w-full flex-col justify-evenly gap-2">
-                <label
-                  htmlFor="role-section-label"
-                  className="text-xs font-semibold text-gray-500"
-                >
-                  ROLE
-                </label>
-                <div className="flex w-full flex-col gap-2">
-                  {roleSection(loading).map((field, index) => {
-                    return (
-                      <InputRenderer<SetupSchemaType>
-                        key={index}
-                        field={field}
-                        form={form}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-            <div className="flex w-full flex-col justify-evenly gap-2">
-              <label
-                htmlFor="personal-info-section-label"
-                className="text-xs font-semibold text-gray-500"
-              >
-                PERSONAL INFORMATION
-              </label>
-              <div className="flex w-full flex-col gap-2">
-                {personalInfoSection(loading).map((field, index) => {
-                  return (
-                    <InputRenderer<SetupSchemaType>
-                      key={index}
-                      field={field}
-                      form={form}
-                    />
-                  );
-                })}
-              </div>
-            </div>
+            <FormSection
+              label="ROLE"
+              fields={roleSection(loading)}
+              form={form}
+            />
+            <FormSection
+              label="PERSONAL INFORMATION"
+              fields={personalInfoSection(loading)}
+              form={form}
+            />
           </div>
         </div>
 

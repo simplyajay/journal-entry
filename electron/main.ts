@@ -7,6 +7,7 @@ import { registerStoreHandlers } from "./ipc/handlers/session";
 import { registerWindowHandlers } from "./ipc/handlers/window";
 import { registerOrganizationHandlers } from "./ipc/handlers/organization";
 import { registerLogHandlers } from "./ipc/handlers/log";
+import { registerUserHandlers } from "./ipc/handlers/user";
 
 let win: BrowserWindow;
 
@@ -41,15 +42,14 @@ app.whenReady().then(async () => {
     return;
   }
 
+  createWindow();
+  registerWindowHandlers(win);
   registerAuthHandlers();
   registerStoreHandlers();
-  registerOrganizationHandlers();
-  registerJevHandlers();
   registerLogHandlers();
-
-  createWindow();
-
-  registerWindowHandlers(win);
+  registerOrganizationHandlers();
+  registerUserHandlers();
+  registerJevHandlers();
 });
 
 app.on("window-all-closed", () => {
