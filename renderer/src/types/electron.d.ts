@@ -1,5 +1,7 @@
-import type { LoginSchemaType } from "@/components/form/login/_schema";
-import type { JournalEntryVoucherDTO } from "@/components/form/jev/_types";
+import type {
+  JournalEntryVoucherDTO,
+  PaginatedJevSummaries,
+} from "@/components/form/jev/_types";
 import type {
   AccountSchemaBaseType,
   ProfileSchemaType,
@@ -9,7 +11,10 @@ import type { LoginHistory } from "./log";
 
 export type IpcResult<T> =
   | { success: true; data: T }
-  | { success: false; error: { type: "field"; message: string; field: string } }
+  | {
+      success: false;
+      error: { type: "field"; message: string; field: string };
+    }
   | { success: false; error: { type: "general"; message: string } };
 
 interface WindowHandlers {
@@ -41,6 +46,18 @@ interface UserHandlers {
 
 interface JevHandlers {
   createJev: (data: JournalEntryVoucherDTO) => Promise<IpcResult<number>>;
+  getJevSummaries: (data: {
+    ownerId: string;
+    pagination: { page: number; pageSize: number };
+    filter: { year: number; month: number };
+  }) => Promise<IpcResult<PaginatedJevSummaries>>;
+  searchJevSummaries: (data: {
+    ownerId: string;
+    keyword: string;
+    pagination: { page: number; pageSize: number };
+    dateRange: { from: string; to: string };
+  }) => Promise<IpcResult<PaginatedJevSummaries>>;
+  getJevYears: (data: { ownerId: string }) => Promise<IpcResult<number[]>>;
 }
 
 interface ElectronAPI {
@@ -53,7 +70,7 @@ interface ElectronAPI {
 
   getSession: () => Promise<
     IpcResult<{
-      userId: string;
+      user: User;
       expiresAt: number;
     } | null>
   >;
