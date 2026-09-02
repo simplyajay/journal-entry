@@ -9,7 +9,7 @@ import type {
   JournalEntrySchemaType,
   SupportingDocumentSchemaType,
 } from "./_schema";
-import type { TableColumn } from "@/components/common/table/EditableTable";
+import type { EditableTableColumn } from "@/components/common/table/EditableTable";
 import type { InputField } from "@/components/common/field/_types";
 
 export const getJournalSectionFields = (
@@ -107,7 +107,7 @@ export const ckdj_cdjSectionFields = (
 
 export const getAccountEntrySectionFields = (
   journal?: JournalType,
-): TableColumn<AccountingEntrySchemaType>[] => [
+): EditableTableColumn<AccountingEntrySchemaType>[] => [
   {
     name: "accountCode",
     label: "Account Code",
@@ -142,7 +142,7 @@ export const getAccountEntrySectionFields = (
 
 export const getSupportingDocumentSectionFields = (
   journalType?: JournalType,
-): TableColumn<SupportingDocumentSchemaType>[] => [
+): EditableTableColumn<SupportingDocumentSchemaType>[] => [
   { name: "number", label: "Document No.", type: "text", width: "w-[30%]" },
   {
     name: "type",
