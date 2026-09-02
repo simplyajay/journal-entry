@@ -33,9 +33,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         if (!session.data) return;
 
-        const result = await window.api.org.getUser(session.data.userId);
-
-        if (result.success) setCurrentUser(result.data);
+        setCurrentUser(session.data.user);
       } finally {
         setSessionLoading(false);
       }
@@ -51,6 +49,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     if (result.success) {
       setCurrentUser(result.data);
+
       navigate("/main");
     } else {
       if (result.error.type === "general") {
