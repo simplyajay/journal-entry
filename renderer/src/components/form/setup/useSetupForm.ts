@@ -26,8 +26,11 @@ export const useSetupForm = () => {
     if (result.success) {
       setShowDialog(true);
     } else {
-      if (result.error.type === "field") {
-        setError("organizationName", { message: result.error.message });
+      if (
+        result.error.type === "field" &&
+        result.error.field === "organizationName"
+      ) {
+        setError(result.error.field, { message: result.error.message });
       } else {
         setSetupError(result.error.message);
       }
