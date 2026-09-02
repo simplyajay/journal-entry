@@ -69,6 +69,12 @@ const createTables = (): void => {
       last_updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
 
+    CREATE INDEX IF NOT EXISTS idx_journal_entries_owner_date
+    ON journal_entries (owner_id, jev_date);
+
+    CREATE INDEX IF NOT EXISTS idx_journal_entries_jev_date
+    ON journal_entries (jev_date);
+
     CREATE TABLE IF NOT EXISTS accounting_entries (
       id                TEXT PRIMARY KEY,
       journal_entry_id  TEXT NOT NULL REFERENCES journal_entries(id) ON DELETE CASCADE,
@@ -107,8 +113,6 @@ const createTables = (): void => {
     created_at  TEXT NOT NULL DEFAULT (datetime('now'))
     
     )
-
-
   `);
 
   console.log("[DB] Tables created (or already exist)");
