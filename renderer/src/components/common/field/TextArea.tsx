@@ -32,7 +32,7 @@ export const TextArea = <T extends FieldValues>({
       className={clsx(
         INPUT_BASE,
         INPUT_VARIANTS[variant],
-        "disabled:cursor-none",
+        "disabled:cursor-default",
         className,
       )}
       placeholder={placeholder}
