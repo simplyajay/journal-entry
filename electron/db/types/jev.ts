@@ -48,19 +48,69 @@ export type JournalEntryVoucher = {
   accountingEntries: AccountEntryType[];
   supportingDocuments?: DocumentEntryDTO[];
   createdBy: string;
-  createdAt: string;
+  createdAt: Date;
   lastUpdatedBy: string;
   lastUpdatedAt: Date;
 };
+
+export type JournalEntryVoucherSummary = {
+  id: string;
+  journalType: JournalType;
+  journalEntryVoucherNumber: string;
+  journalEntryVoucherDate: Date;
+  description: string;
+  createdAt: Date;
+};
+
+// CREATE JEV
 
 export type CreateJournalEntryVoucherDTO = Omit<
   JournalEntryVoucher,
   "supportingDocuments" | "id"
 > & {
+  ownerId: string;
   supportingDocuments?: CreateDocumentEntryDTO[];
 };
 
 export type CreateJevReturn = {
   log: AuditLogType;
   jev: JournalEntryVoucher;
+};
+
+// GET JEV SUMMARIES
+
+export type PaginationParams = {
+  page: number;
+  pageSize: number;
+};
+
+export type FilterParams = {
+  year: number;
+  month: number;
+};
+
+export type DateRangeParams = {
+  from: string; // YYYY-MM-DD
+  to: string; // YYYY-MM-DD
+};
+
+export type PaginatedJevSummaries = {
+  items: JournalEntryVoucherSummary[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+};
+
+export type getJevSummariesByOwnerParams = {
+  ownerId: string;
+  pagination: PaginationParams;
+  filter: FilterParams;
+};
+
+export type searchJevSummariesByOwnerParams = {
+  ownerId: string;
+  keyword: string;
+  pagination: PaginationParams;
+  dateRange: DateRangeParams;
 };
