@@ -75,7 +75,7 @@ function Calendar({
           defaultClassNames.dropdowns,
         ),
         dropdown_root: cn(
-          "relative p-1 rounded-(--cell-radius)",
+          "relative rounded-(--cell-radius) p-1 hover:bg-accent/50 hover:cursor-pointer transition-colors",
           defaultClassNames.dropdown_root,
         ),
         dropdown: cn(
@@ -89,7 +89,7 @@ function Calendar({
             : "flex items-center gap-1 rounded-(--cell-radius) text-lg [&>svg]:size-3.5 [&>svg]:text-muted-foreground",
           defaultClassNames.caption_label,
         ),
-        table: "w-full border-collapse",
+        month_grid: "w-full border-collapse",
         weekdays: cn("flex", defaultClassNames.weekdays),
         weekday: cn(
           "flex-1 rounded-(--cell-radius) text-[0.8rem] font-normal text-muted-foreground select-none",
@@ -178,6 +178,7 @@ function Calendar({
             </td>
           );
         },
+
         ...components,
       }}
       {...props}
