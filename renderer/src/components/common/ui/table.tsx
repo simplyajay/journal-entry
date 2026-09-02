@@ -2,15 +2,19 @@ import * as React from "react";
 
 import { cn } from "../lib/utils";
 
-function Table({ className, ...props }: React.ComponentProps<"table">) {
+function Table({
+  className,
+  containerClassName,
+  ...props
+}: React.ComponentProps<"table"> & { containerClassName?: string }) {
   return (
     <div
       data-slot="table-container"
-      className="relative w-full overflow-x-auto"
+      className={cn("relative w-full overflow-x-auto", containerClassName)}
     >
       <table
         data-slot="table"
-        className={cn("w-full caption-bottom text-sm", className)}
+        className={cn("h-full w-full caption-bottom text-sm", className)}
         {...props}
       />
     </div>
@@ -50,12 +54,17 @@ function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
   );
 }
 
-function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
+function TableRow({
+  className,
+  noBorder,
+  ...props
+}: React.ComponentProps<"tr"> & { noBorder?: boolean }) {
   return (
     <tr
       data-slot="table-row"
       className={cn(
         "has-aria-expanded:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors",
+        noBorder && "border-none",
         className,
       )}
       {...props}
@@ -81,7 +90,7 @@ function TableCell({ className, ...props }: React.ComponentProps<"td">) {
     <td
       data-slot="table-cell"
       className={cn(
-        "p-2 align-middle whitespace-nowrap has-[[role=checkbox]]:pr-0",
+        "p-2 align-middle whitespace-nowrap text-gray-800 has-[[role=checkbox]]:pr-0",
         className,
       )}
       {...props}
