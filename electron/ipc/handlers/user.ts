@@ -20,7 +20,7 @@ export const registerUserHandlers = () => {
           return { success: false, error: { type: "general", message: "Unauthorized." } };
         }
 
-        const updatedUser = updateUserProfile(session.userId, data);
+        const updatedUser = updateUserProfile(session.user.id, data);
 
         return { success: true, data: updatedUser };
       } catch (err) {
@@ -43,7 +43,7 @@ export const registerUserHandlers = () => {
         return { success: false, error: { type: "general", message: "Unauthorized." } };
       }
 
-      const updatedUser = updateUserAccount(session.userId, data);
+      const updatedUser = updateUserAccount(session.user.id, data);
 
       return { success: true, data: updatedUser };
     } catch (err) {
