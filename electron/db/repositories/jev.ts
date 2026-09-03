@@ -1,26 +1,24 @@
 import { supportingDocumentsMap } from "../constants/jev";
 import { getDb } from "../database";
-import {
-  JournalEntryVoucher,
-  CreateJournalEntryVoucherDTO,
-  DocumentEntryDTO,
-  CreateJevReturn,
-  AuditLogType,
-  JournalEntryVoucherSummary,
-} from "../types/jev";
 import { v7 as uuidv7 } from "uuid";
 import type {
+  AccountEntry,
+  CivilDate,
+  AuditLog,
+  CreateJevReturn,
+  CreateJournalEntryVoucherDTO,
+  getJevByOwnerAndIdParams,
   getJevSummariesByOwnerParams,
+  JournalEntryVoucherDetail,
+  JournalEntryVoucherSummary,
   PaginatedJevSummaries,
   searchJevSummariesByOwnerParams,
+  SupportingDocumentEntry,
 } from "../types/jev";
 import { FieldError } from "../error";
 
-const toDateString = (date: Date | undefined): string | null => {
-  return date ? date.toISOString() : null;
-};
-
-const toCivilDateString = (date: Date | undefined): string | null => {
+//  the write path receives real Date objects and stores the civil date
+const toCivilDate = (date: Date | undefined): CivilDate | null => {
   if (!date) return null;
 
   return new Intl.DateTimeFormat("en-CA", {
@@ -67,13 +65,13 @@ export const createJev = (data: CreateJournalEntryVoucherDTO): CreateJevReturn =
         data.ownerId,
         data.journalType,
         data.journalEntryVoucherNumber,
-        toCivilDateString(data.journalEntryVoucherDate),
+        toCivilDate(data.journalEntryVoucherDate),
         data.disbursementVoucherNumber ?? null,
-        toCivilDateString(data.disbursementVoucherDate),
+        toCivilDate(data.disbursementVoucherDate),
         data.debitAuthorityNumber ?? null,
-        toCivilDateString(data.debitAuthorityDate),
+        toCivilDate(data.debitAuthorityDate),
         data.checkNumber ?? null,
-        toCivilDateString(data.checkDate),
+        toCivilDate(data.checkDate),
         data.payeeName ?? null,
         data.description,
         data.createdBy,
@@ -104,8 +102,7 @@ export const createJev = (data: CreateJournalEntryVoucherDTO): CreateJevReturn =
       );
     }
 
-    //insert description
-    const supportingDocuments: DocumentEntryDTO[] = data.supportingDocuments
+    const supportingDocuments = data.supportingDocuments
       ? data.supportingDocuments.map((doc) => ({
           ...doc,
           description: supportingDocumentsMap[doc.type],
@@ -121,15 +118,7 @@ export const createJev = (data: CreateJournalEntryVoucherDTO): CreateJevReturn =
           id, journal_entry_id, sort_order,
           document_number, document_type, description, document_date
         ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [
-          entryId,
-          jevId,
-          i,
-          doc.number,
-          doc.type,
-          doc.description,
-          toCivilDateString(doc.date),
-        ],
+        [entryId, jevId, i, doc.number, doc.type, doc.description, toCivilDate(doc.date)],
       );
     }
 
@@ -149,18 +138,17 @@ export const createJev = (data: CreateJournalEntryVoucherDTO): CreateJevReturn =
 
     db.exec("COMMIT");
 
-    const jev: JournalEntryVoucher = { ...data, id: jevId, supportingDocuments };
-    const log: AuditLogType = {
+    const log: AuditLog = {
       id: logId,
       userId: data.createdBy,
       action: "CREATE",
       entityType: "journal_entry",
       entityId: jevId,
       description: `Created journal entry ${data.journalEntryVoucherNumber}`,
-      createdAt: new Date(Date.now()),
+      createdAt: new Date().toISOString(),
     };
 
-    return { jev, log };
+    return { jevId, log };
   } catch (err) {
     db.exec("ROLLBACK");
 
@@ -183,9 +171,6 @@ export const getJevSummariesByOwner = ({
 
   const { page, pageSize } = pagination;
   const { year, month } = filter;
-
-  //console.log("page: ", page, " pageSize: ", pageSize);
-  //console.log("year: ", year, " month : ", month);
 
   const { start, end } = getDateRange(year, month);
 
@@ -229,11 +214,6 @@ export const searchJevSummariesByOwner = ({
   const offset = (page - 1) * pageSize;
   const pattern = `%${keyword}%`;
 
-  console.log("ownerId: ", ownerId);
-  console.log("keyword: ", pattern);
-  console.log("from : ", from);
-  console.log("to: ", to);
-
   const countRow = db.get(
     `SELECT COUNT(*) as count FROM journal_entries
     WHERE owner_id = ?
@@ -259,6 +239,54 @@ export const searchJevSummariesByOwner = ({
   ) as JournalEntryVoucherSummary[] | [];
 
   return { items, total, pageSize, page, totalPages: Math.ceil(total / pageSize) };
+};
+
+export const getJevByOwnerAndId = ({
+  ownerId,
+  jevId,
+}: getJevByOwnerAndIdParams): JournalEntryVoucherDetail | null => {
+  const db = getDb();
+
+  const row = db.get(
+    `SELECT id, owner_id as ownerId, journal_type as journalType,
+    jev_number as journalEntryVoucherNumber,
+    jev_date as journalEntryVoucherDate,
+    dv_number as disbursementVoucherNumber,
+    dv_date as disbursementVoucherDate,
+    ada_number as debitAuthorityNumber,
+    ada_date as debitAuthorityDate,
+    check_number as checkNumber,
+    check_date as checkDate,
+    payee_name as payeeName,
+    description,
+    created_by as createdBy, created_at as createdAt,
+    last_updated_by as lastUpdatedBy, last_updated_at as lastUpdatedAt
+    FROM journal_entries
+    WHERE id = ? AND owner_id = ?`,
+    [jevId, ownerId],
+  ) as JournalEntryVoucherDetail | null;
+
+  if (!row) return null;
+
+  const accountingEntries = db.all(
+    `SELECT account_code as accountCode, account_name as accountName,
+    debit, credit
+    FROM accounting_entries
+    WHERE journal_entry_id = ?
+    ORDER BY sort_order ASC`,
+    [jevId],
+  ) as AccountEntry[] | [];
+
+  const supportingDocuments = db.all(
+    `SELECT document_type as type, document_number as number,
+    description, document_date as date
+    FROM supporting_documents
+    WHERE journal_entry_id = ?
+    ORDER BY sort_order ASC`,
+    [jevId],
+  ) as SupportingDocumentEntry[] | [];
+
+  return { ...row, accountingEntries, supportingDocuments };
 };
 
 export const getAvailableJevYears = (ownerId: string): number[] => {

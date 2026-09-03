@@ -1,6 +1,7 @@
-import { DocumentType } from "../types/jev";
+import type { SupportingDocumentType } from "../types/jev";
 
-export const supportingDocumentsMap: Record<DocumentType, string> = {
+// renamed: DocumentType -> SupportingDocumentType (C1, one shared name)
+export const supportingDocumentsMap: Record<SupportingDocumentType, string> = {
   po: "Purchase Order",
   bur: "Budget Utilization Request",
   ris: "Requisition and Issue Slip",

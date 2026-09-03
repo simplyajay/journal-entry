@@ -9,6 +9,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      //  shared domain types (compile-time only, erased before bundling)
+      "@shared": path.resolve(__dirname, "../electron/shared"),
     },
   },
 });

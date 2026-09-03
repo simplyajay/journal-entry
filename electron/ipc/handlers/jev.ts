@@ -2,14 +2,16 @@ import { ipcMain } from "electron";
 import {
   createJev,
   getAvailableJevYears,
+  getJevByOwnerAndId,
   getJevSummariesByOwner,
   searchJevSummariesByOwner,
 } from "../../db/repositories/jev";
 import type {
   CreateJournalEntryVoucherDTO,
+  getJevByOwnerAndIdParams,
   getJevSummariesByOwnerParams,
+  JournalEntryVoucherDetail,
   PaginatedJevSummaries,
-  PaginationParams,
   searchJevSummariesByOwnerParams,
 } from "../../db/types/jev";
 import type { IpcResult } from "../types";
@@ -20,9 +22,9 @@ export const registerJevHandlers = (): void => {
     "jev:create",
     (_event, data: CreateJournalEntryVoucherDTO): IpcResult<string> => {
       try {
-        const { jev, log } = createJev(data);
+        const { jevId } = createJev(data);
 
-        return { success: true, data: jev.id };
+        return { success: true, data: jevId };
       } catch (err) {
         if (err instanceof FieldError) {
           return {
@@ -68,6 +70,25 @@ export const registerJevHandlers = (): void => {
         const jevSummaries = searchJevSummariesByOwner(data);
 
         return { success: true, data: jevSummaries };
+      } catch (err) {
+        return {
+          success: false,
+          error: {
+            type: "general",
+            message: err instanceof Error ? err.message : "Unexpected error",
+          },
+        };
+      }
+    },
+  );
+
+  ipcMain.handle(
+    "jev:get-jev",
+    (_event, data: getJevByOwnerAndIdParams): IpcResult<JournalEntryVoucherDetail | null> => {
+      try {
+        const jev = getJevByOwnerAndId(data);
+
+        return { success: true, data: jev };
       } catch (err) {
         return {
           success: false,

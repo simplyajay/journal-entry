@@ -81,8 +81,9 @@ const createTables = (): void => {
       sort_order        INTEGER NOT NULL,
       account_code      TEXT    NOT NULL,
       account_name      TEXT    NOT NULL,
-      debit             REAL,
-      credit            REAL
+      -- A4: whole centavos, never a float. See Cents in shared/types/jev.ts.
+      debit             INTEGER,
+      credit            INTEGER
     );
 
     CREATE TABLE IF NOT EXISTS supporting_documents (

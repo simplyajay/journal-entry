@@ -15,6 +15,7 @@ export type InputVariant = keyof typeof INPUT_VARIANTS;
 export type InputType =
   | "text"
   | "select"
+  | "combobox"
   | "date-picker"
   | "textarea"
   | "number"
@@ -22,6 +23,12 @@ export type InputType =
   | "password";
 
 export type SelectOptions = { label: string; value: string };
+
+export type ComboOption = {
+  label: string;
+  value: string;
+  data?: Record<string, string | number | undefined>;
+};
 
 export type BaseInputProps<T extends FieldValues> =
   InputHTMLAttributes<HTMLInputElement> & {
@@ -43,11 +50,16 @@ export type SelectInputProps<T extends FieldValues> =
   ControllerInputProps<T> & {
     options: SelectOptions[];
     placeholder?: string;
+    onValueChange?: (value: string) => void;
   };
 
-export type CurrencyInputProps<T extends FieldValues> =
+export type ComboboxInputProps<T extends FieldValues> =
   ControllerInputProps<T> & {
-    onChange: (value: number | undefined) => void;
+    options: ComboOption[];
+    placeholder?: string;
+    allowCustom?: boolean;
+    emptyMessage?: string;
+    maxResults?: number;
   };
 
 export type InputField<T extends FieldValues> = {
@@ -57,5 +69,15 @@ export type InputField<T extends FieldValues> = {
   error?: string;
   type: InputType;
   disabled?: boolean;
-  options?: SelectOptions[];
+  options?: SelectOptions[] | ComboOption[];
+  /**
+   * A13: runs after the field's own onChange, for the caller that needs to
+   * react to a selection (e.g. clearing type-specific fields when the
+   * journal type changes). Only wired for `select` today.
+   */
+  onValueChange?: (value: string) => void;
+  // A12: combobox-only knobs, previously unreachable through InputRenderer.
+  allowCustom?: boolean;
+  emptyMessage?: string;
+  maxResults?: number;
 };

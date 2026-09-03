@@ -1,4 +1,4 @@
-import SetupForm from "@/components/form/setup/SetupForm";
+import SetupForm from "@/features/setup/SetupForm";
 
 const SetupPage = () => {
   return (

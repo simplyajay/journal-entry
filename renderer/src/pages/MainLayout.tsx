@@ -1,13 +1,13 @@
-import Sidebar2 from "@/components/common/sidebar/Sidebar";
-import SettingsDialog from "@/components/common/dialog/SettingsDialog/SettingsDialog";
+import Sidebar from "@/components/common/sidebar/Sidebar";
+import SettingsDialog from "@/features/settings/dialog/SettingsDialog";
 import { Outlet } from "react-router-dom";
-import { MainProvider } from "./contexts/MainLayoutContext";
+import { MainProvider } from "@/contexts/MainProvider";
 
 const MainLayout = () => {
   return (
     <MainProvider>
       <div className="flex h-full bg-white [--sidebar-width-icon:3rem] [--sidebar-width:12rem]">
-        <Sidebar2 />
+        <Sidebar />
 
         <main className="flex flex-1 scrollbar-gutter-stable justify-center overflow-auto px-4 py-8">
           <div className="h-full w-full max-w-5xl">
