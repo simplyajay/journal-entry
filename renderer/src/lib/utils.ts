@@ -28,10 +28,3 @@ export const blockPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
   }
 };
-
-export const formatNumber = (value: number) => {
-  return value.toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-};

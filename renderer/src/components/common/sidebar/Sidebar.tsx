@@ -1,15 +1,14 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import {
-  SquarePen,
   List,
   LayoutDashboard,
   PanelLeft,
   LogOut,
   Settings,
 } from "lucide-react";
-import { cn } from "../lib/utils";
-import { useAuth } from "@/pages/contexts/AuthContext";
+import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/useAuth";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,13 +17,27 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { useMain } from "@/pages/contexts/MainLayoutContext";
+import { useMain } from "@/contexts/useMain";
 
-type SidebarItem = { title: string; url: string; icon: React.ElementType };
+type SidebarItem = {
+  title: string;
+  url: string;
+  icon: React.ElementType;
+  owns: string[];
+};
 const items: SidebarItem[] = [
-  { title: "Dashboard", url: "jev/dashboard", icon: LayoutDashboard },
-  { title: "New JEV", url: "jev/create", icon: SquarePen },
-  { title: "Journal Entries", url: "jev/list", icon: List },
+  {
+    title: "Dashboard",
+    url: "jev/dashboard",
+    icon: LayoutDashboard,
+    owns: ["jev/dashboard"],
+  },
+  {
+    title: "Journal Entries",
+    url: "jev/list",
+    icon: List,
+    owns: ["jev/list", "jev/create", "jev/edit", "jev/view"],
+  },
 ];
 
 const EXPANDED_WIDTH = "200px";
@@ -34,6 +47,7 @@ const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const { logout, currentUser: user } = useAuth();
   const { setSettingsDialogOpen } = useMain();
+  const { pathname } = useLocation();
 
   return (
     <div
@@ -74,32 +88,39 @@ const Sidebar = () => {
         </div>
 
         <ul className="flex flex-col gap-0.5 px-2">
-          {items.map((item) => (
-            <li key={item.title}>
-              <NavLink
-                to={item.url}
-                className={({ isActive }) =>
-                  cn(
+          {items.map((item) => {
+            const isActive = item.owns.some((p) =>
+              pathname.startsWith(`/main/${p}`),
+            );
+
+            return (
+              <li key={item.title}>
+                <NavLink
+                  to={item.url}
+                  onClick={(e) => {
+                    if (isActive) e.preventDefault();
+                  }}
+                  className={cn(
                     "font-manrope flex h-8 items-center gap-2 rounded-md px-2 text-sm transition-colors",
                     "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                     isActive
                       ? "bg-sidebar-accent text-sidebar-accent-foreground"
                       : "text-sidebar-foreground",
-                  )
-                }
-              >
-                <item.icon className="size-4 shrink-0" color="#1e2939" />
-                <span
-                  className={cn(
-                    "overflow-hidden whitespace-nowrap text-gray-800 transition-all duration-200",
-                    collapsed ? "w-0 opacity-0" : "opacity-100",
                   )}
                 >
-                  {item.title}
-                </span>
-              </NavLink>
-            </li>
-          ))}
+                  <item.icon className="size-4 shrink-0" color="#1e2939" />
+                  <span
+                    className={cn(
+                      "overflow-hidden whitespace-nowrap text-gray-800 transition-all duration-200",
+                      collapsed ? "w-0 opacity-0" : "opacity-100",
+                    )}
+                  >
+                    {item.title}
+                  </span>
+                </NavLink>
+              </li>
+            );
+          })}
         </ul>
       </div>
 
@@ -107,7 +128,7 @@ const Sidebar = () => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex h-12 w-full items-center gap-2 rounded-md p-2 transition-colors hover:cursor-pointer">
-              <div className="bor der flex size-7 shrink-0 items-center justify-center rounded-full bg-gray-400 text-[16px] font-medium">
+              <div className="flex size-7 shrink-0 items-center justify-center rounded-full border bg-gray-400 text-[16px] font-medium">
                 {user?.firstName.charAt(0).toUpperCase()}
               </div>
               <span

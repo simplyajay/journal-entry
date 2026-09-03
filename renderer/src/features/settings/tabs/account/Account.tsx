@@ -1,7 +1,7 @@
 import DataTable from "@/components/common/table/DataTable";
 import { AccountInformationForm } from "./AccountForms";
 import { ProfileInformationForm } from "./AccountForms";
-import { useAuth } from "@/pages/contexts/AuthContext";
+import { useCurrentUser } from "@/contexts/useAuth";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import type { DataTableColumn } from "@/components/common/table/DataTable";
@@ -40,27 +40,40 @@ const columns: DataTableColumn<LoginHistory>[] = [
 ];
 
 const Account = () => {
-  const { currentUser } = useAuth();
+  const currentUser = useCurrentUser();
   const [loginHistory, setLoginHistory] = useState<LoginHistory[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const getLoginHistory = async () => {
-    setLoading(true);
-
-    if (!currentUser) return;
-
-    const result = await window.api.log.getLoginHistory(currentUser.id);
-
-    if (result.success) setLoginHistory(result.data);
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    setLoading(false);
-  };
+  const userId = currentUser.id;
 
   useEffect(() => {
+    let cancelled = false;
+
+    const getLoginHistory = async () => {
+      const result = await window.api.log.getLoginHistory(userId);
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      if (cancelled) return;
+
+      if (result.success) {
+        setLoginHistory(result.data);
+        setError(null);
+      } else {
+        setLoginHistory([]);
+        setError("Could not load login history.");
+      }
+
+      setLoading(false);
+    };
+
     getLoginHistory();
-  }, []);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
 
   return (
     <div className="flex w-full flex-col gap-2 p-4">
@@ -94,6 +107,7 @@ const Account = () => {
               columns={columns}
               getRowId={(row) => row.id}
               rows={loginHistory}
+              emptyMessage={error ?? "No sign-ins recorded yet."}
               noBorder
             />
           </div>

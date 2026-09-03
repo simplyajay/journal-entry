@@ -1,7 +1,7 @@
 import { useLoginForm } from "./useLoginForm";
 import { LabeledTextInput } from "@/components/common/field/TextInput";
 import { Button } from "@/components/common/ui/button";
-import { useAuth } from "@/pages/contexts/AuthContext";
+import { useAuth } from "@/contexts/useAuth";
 import { Loader2 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
@@ -71,7 +71,7 @@ const LoginForm = () => {
 
           <span className="flex gap-1">
             <p className="font-manrope text-xs font-semibold text-gray-600">
-              Dont' have an account?
+              Don't have an account?
             </p>
             <NavLink
               className="text-xs font-bold text-gray-600 hover:text-gray-700"

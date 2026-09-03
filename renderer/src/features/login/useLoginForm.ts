@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { LoginSchema } from "./_schema";
-import { useAuth } from "@/pages/contexts/AuthContext";
+import { useAuth } from "@/contexts/useAuth";
 import type { SubmitHandler } from "react-hook-form";
 import type { LoginSchemaType } from "./_schema";
 

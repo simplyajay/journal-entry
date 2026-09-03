@@ -1,20 +1,8 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { User } from "@/types/user";
+import { AuthContext } from "./useAuth";
 import type { LoginSchemaType } from "@/features/login/_schema";
-
-type AuthContextValue = {
-  currentUser: User | null;
-  setCurrentUser: (user: User | null) => void;
-  login: (data: LoginSchemaType) => Promise<void>;
-  logout: () => Promise<void>;
-  sessionLoading: boolean;
-  loginLoading: boolean;
-  loginError?: string;
-  setLoginError: (val: string | undefined) => void;
-};
-
-const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+import type { User } from "@/types/user";
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -64,7 +52,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     if (result.success) {
       setCurrentUser(null);
-      navigate("/");
+      navigate("/login");
     }
   };
 
@@ -84,10 +72,4 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       {children}
     </AuthContext.Provider>
   );
-};
-
-export const useAuth = () => {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
-  return ctx;
 };
