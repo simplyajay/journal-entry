@@ -1,25 +1,27 @@
-import { useJevFormContext } from "../JevFormContext";
-import { ckdj_cdjSectionFields } from "../_fields";
+import { useMemo } from "react";
+import { useJevFormContext } from "../useJevFormContext";
+import { getCkdjCdjSectionFields } from "../_fields";
 import { FORM_SECTION_CLASS } from "../JevForm";
 import { InputRenderer } from "@/components/common/field/RHFInputRenderer";
 
 const CkdjCdjSection = () => {
   const { form, journalType } = useJevFormContext();
 
-  const ckdj_cdj_fields = ckdj_cdjSectionFields(journalType);
+  const sectionFields = useMemo(
+    () => getCkdjCdjSectionFields(journalType),
+    [journalType],
+  );
+
+  if (journalType !== "ckdj" && journalType !== "cdj") return null;
 
   return (
-    !(journalType !== "ckdj" && journalType !== "cdj") && (
-      <div className={FORM_SECTION_CLASS}>
-        {ckdj_cdj_fields.map((field, index) => {
-          return (
-            <div key={index} className="min-w-0 flex-1">
-              <InputRenderer field={field} form={form} />
-            </div>
-          );
-        })}
-      </div>
-    )
+    <div className={FORM_SECTION_CLASS}>
+      {sectionFields.map((field) => (
+        <div key={field.name} className="min-w-0 flex-1">
+          <InputRenderer field={field} form={form} />
+        </div>
+      ))}
+    </div>
   );
 };
 

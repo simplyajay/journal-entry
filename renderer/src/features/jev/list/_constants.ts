@@ -1,13 +1,4 @@
-import type { JournalType } from "../form/_types";
 import type { SelectMonth } from "./_types";
-
-export const journalTypeMap: Record<JournalType, string> = {
-  ckdj: "CKDJ",
-  cdj: "CDJ",
-  crj: "CRJ",
-  msij: "MSIJ",
-  gj: "GJ",
-};
 
 // 1-indexed to match SQL's month convention (January = 1, December = 12),
 // unlike JS's Date.getMonth() which is 0-indexed (January = 0).

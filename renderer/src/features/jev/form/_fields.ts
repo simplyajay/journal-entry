@@ -1,8 +1,8 @@
 import {
   allowedSupportingDocumentsMap,
-  journalTypeMap,
+  journalTypeLabel,
   supportingDocumentsMap,
-} from "./_constants";
+} from "../_constants";
 import type { JournalType } from "./_types";
 import type {
   AccountingEntrySchemaType,
@@ -14,16 +14,18 @@ import type { InputField } from "@/components/common/field/_types";
 
 export const getJournalSectionFields = (
   journal?: JournalType,
+  onJournalTypeChange?: (value: string) => void,
 ): InputField<JournalEntrySchemaType>[] => [
   {
     name: "journalType",
     placeholder: "Journal",
     label: "Journal",
     type: "select",
-    options: Object.entries(journalTypeMap).map(([value, label]) => ({
+    options: Object.entries(journalTypeLabel).map(([value, label]) => ({
       value,
       label,
     })),
+    onValueChange: onJournalTypeChange,
   },
   {
     name: "journalEntryVoucherNumber",
@@ -41,7 +43,7 @@ export const getJournalSectionFields = (
   },
 ];
 
-export const ckdj_cdjSectionFields = (
+export const getCkdjCdjSectionFields = (
   journal?: JournalType,
 ): InputField<JournalEntrySchemaType>[] => {
   const baseList: InputField<JournalEntrySchemaType>[] = [
@@ -61,46 +63,43 @@ export const ckdj_cdjSectionFields = (
     },
   ];
 
-  if (journal === "cdj" || journal === "ckdj") {
-    if (journal === "cdj") {
-      const cdjFields: InputField<JournalEntrySchemaType>[] = [
-        {
-          name: "debitAuthorityNumber",
-          placeholder: "ADA No.",
-          label: "ADA No.",
-          type: "text",
-          disabled: !journal,
-        },
-        {
-          name: "debitAuthorityDate",
-          placeholder: "Select Date",
-          label: "ADA Date",
-          type: "date-picker",
-          disabled: !journal,
-        },
-      ];
-      cdjFields.forEach((field) => baseList.push(field));
-    } else {
-      const ckdjFields: InputField<JournalEntrySchemaType>[] = [
-        {
-          name: "checkNumber",
-          placeholder: "Check No.",
-          label: "Check No.",
-          type: "text",
-          disabled: !journal,
-        },
-        {
-          name: "checkDate",
-          placeholder: "Select Date",
-          label: "Check Date",
-          type: "date-picker",
-          disabled: !journal,
-        },
-      ];
+  if (journal === "cdj")
+    return [
+      ...baseList,
+      {
+        name: "debitAuthorityNumber",
+        placeholder: "ADA No.",
+        label: "ADA No.",
+        type: "text",
+        disabled: !journal,
+      },
+      {
+        name: "debitAuthorityDate",
+        placeholder: "Select Date",
+        label: "ADA Date",
+        type: "date-picker",
+        disabled: !journal,
+      },
+    ];
 
-      ckdjFields.forEach((field) => baseList.push(field));
-    }
-  }
+  if (journal === "ckdj")
+    return [
+      ...baseList,
+      {
+        name: "checkNumber",
+        placeholder: "Check No.",
+        label: "Check No.",
+        type: "text",
+        disabled: !journal,
+      },
+      {
+        name: "checkDate",
+        placeholder: "Select Date",
+        label: "Check Date",
+        type: "date-picker",
+        disabled: !journal,
+      },
+    ];
 
   return baseList;
 };
@@ -111,14 +110,14 @@ export const getAccountEntrySectionFields = (
   {
     name: "accountCode",
     label: "Account Code",
-    type: "text",
+    type: "combobox",
     width: "w-[20%]",
     disabled: !journal,
   },
   {
     name: "accountName",
     label: "Account Name",
-    type: "text",
+    type: "combobox",
     width: "w-[30%]",
     disabled: !journal,
   },
@@ -164,7 +163,7 @@ export const getSupportingDocumentSectionFields = (
   },
 ];
 
-export const summarySectionFields = (
+export const getSummarySectionFields = (
   journal?: JournalType,
 ): InputField<JournalEntrySchemaType>[] => {
   const baseList: InputField<JournalEntrySchemaType>[] = [
@@ -177,15 +176,16 @@ export const summarySectionFields = (
     },
   ];
 
-  if (journal === "ckdj" || journal === "cdj" || journal === "gj") {
-    const payee: InputField<JournalEntrySchemaType> = {
-      name: "payeeName",
-      placeholder: "Payee",
-      label: "Payee",
-      type: "text",
-    };
-    baseList.push(payee);
-  }
+  if (journal === "ckdj" || journal === "cdj" || journal === "gj")
+    return [
+      ...baseList,
+      {
+        name: "payeeName",
+        placeholder: "Payee",
+        label: "Payee",
+        type: "text",
+      },
+    ];
 
   return baseList;
 };

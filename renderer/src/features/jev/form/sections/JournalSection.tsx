@@ -1,22 +1,46 @@
-import { useJevFormContext } from "../JevFormContext";
+import { useMemo } from "react";
+import { useJevFormContext } from "../useJevFormContext";
 import { FORM_SECTION_CLASS } from "../JevForm";
 import { getJournalSectionFields } from "../_fields";
+import { accountingEntriesDefaultValues } from "../useJevFormBase";
 import { InputRenderer } from "@/components/common/field/RHFInputRenderer";
+import type { JournalType } from "../_types";
 
 const JournalSection = () => {
   const { form, journalType } = useJevFormContext();
+  const { clearErrors, getValues, reset } = form;
 
-  const sectionFields = getJournalSectionFields(journalType);
+  const handleJournalTypeChange = (value: string) => {
+    const {
+      journalEntryVoucherNumber,
+      journalEntryVoucherDate,
+      description,
+      accountingEntries,
+    } = getValues();
+
+    clearErrors();
+    reset({
+      journalType: value as JournalType,
+      journalEntryVoucherNumber,
+      journalEntryVoucherDate,
+      description,
+      accountingEntries: accountingEntries ?? accountingEntriesDefaultValues,
+      supportingDocuments: [],
+    });
+  };
+
+  const sectionFields = useMemo(
+    () => getJournalSectionFields(journalType, handleJournalTypeChange),
+    [journalType],
+  );
 
   return (
     <div className={FORM_SECTION_CLASS}>
-      {sectionFields.map((field, index) => {
-        return (
-          <div key={index} className="min-w-0 flex-1">
-            <InputRenderer field={field} form={form} />
-          </div>
-        );
-      })}
+      {sectionFields.map((field) => (
+        <div key={field.name} className="min-w-0 flex-1">
+          <InputRenderer field={field} form={form} />
+        </div>
+      ))}
     </div>
   );
 };

@@ -1,11 +1,21 @@
-import type { JournalType, SupportingDocumentType } from "./_types";
+import type { JournalType, SupportingDocumentType } from "./form/_types";
 
-export const journalTypeMap: Record<JournalType, string> = {
+/** Long form, for the journal picker in the JEV form. */
+export const journalTypeLabel: Record<JournalType, string> = {
   ckdj: "[CKDJ] Check Disbursement Journal",
   cdj: "[CDJ] Cash Disbursement Journal",
   crj: "[CRJ] Cash Receipts Journal",
   msij: "[MSIJ] Materials and Supplies Issuance Journal",
   gj: "[GJ] General Journal",
+};
+
+/** Acronym only, for the JEV list column. */
+export const journalTypeShortLabel: Record<JournalType, string> = {
+  ckdj: "CKDJ",
+  cdj: "CDJ",
+  crj: "CRJ",
+  msij: "MSIJ",
+  gj: "GJ",
 };
 
 export const supportingDocumentsMap: Record<SupportingDocumentType, string> = {
@@ -29,3 +39,5 @@ export const allowedSupportingDocumentsMap: Record<
   msij: ["ris"],
   gj: ["lr"],
 };
+
+export const MIN_ACCOUNT_ROWS = 2;
