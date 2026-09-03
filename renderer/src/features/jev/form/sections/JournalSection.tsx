@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useJevFormContext } from "../useJevFormContext";
 import { FORM_SECTION_CLASS } from "../JevForm";
 import { getJournalSectionFields } from "../_fields";
@@ -10,7 +10,7 @@ const JournalSection = () => {
   const { form, journalType } = useJevFormContext();
   const { clearErrors, getValues, reset } = form;
 
-  const handleJournalTypeChange = (value: string) => {
+  const handleJournalTypeChange = useCallback((value: string) => {
     const {
       journalEntryVoucherNumber,
       journalEntryVoucherDate,
@@ -27,11 +27,11 @@ const JournalSection = () => {
       accountingEntries: accountingEntries ?? accountingEntriesDefaultValues,
       supportingDocuments: [],
     });
-  };
+  }, [clearErrors, getValues, reset]);
 
   const sectionFields = useMemo(
     () => getJournalSectionFields(journalType, handleJournalTypeChange),
-    [journalType],
+    [journalType, handleJournalTypeChange],
   );
 
   return (
