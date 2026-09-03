@@ -2,10 +2,15 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { AccountSchema, ProfileSchema } from "./_schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAuth } from "@/pages/contexts/AuthContext";
-import { useSettingsDialog } from "@/features/settings/dialog/SettingsDialogContext";
+import { useAuth } from "@/contexts/useAuth";
+import { useSettingsDialog } from "@/features/settings/dialog/useSettingsDialog";
 import type { AccountSchemaType, ProfileSchemaType } from "./_schema";
-import type { DefaultValues, FieldValues, Resolver } from "react-hook-form";
+import type {
+  DefaultValues,
+  FieldPath,
+  FieldValues,
+  Resolver,
+} from "react-hook-form";
 import type { User } from "@/types/user";
 import type { IpcResult } from "@/types/electron";
 
@@ -53,7 +58,9 @@ const useAccountForm = <T extends FieldValues>({
       if (result.error.type === "general") {
         setUpdateError(result.error.message);
       } else {
-        setError(result.error.field as any, { message: result.error.message });
+        setError(result.error.field as FieldPath<T>, {
+          message: result.error.message,
+        });
       }
       setLoading(false);
       return;
@@ -107,10 +114,13 @@ export const useAccountInformationForm = () => {
       newPassword: "",
       confirmPassword: "",
     },
-    submit: (data) => {
-      const { confirmPassword, ...rest } = data;
-      return window.api.user.updateUserAccount(rest);
-    },
+    // confirmPassword is a client-side check only; it never leaves the form.
+    submit: (data) =>
+      window.api.user.updateUserAccount({
+        username: data.username,
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword,
+      }),
     getResetValues: (_data, result) => ({
       username: result.username,
       currentPassword: "",

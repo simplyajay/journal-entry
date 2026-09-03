@@ -1,24 +1,6 @@
-import { createContext, useContext, useReducer } from "react";
-
-type ActionDialogState = {
-  show: boolean;
-  title: string;
-  description: string;
-  confirmLabel?: string;
-  onConfirm?: () => void;
-};
-
-type ActionDialogAction =
-  | {
-      type: "open";
-      payload: {
-        title: string;
-        description: string;
-        confirmLabel?: string;
-        onConfirm?: () => void;
-      };
-    }
-  | { type: "close" };
+import { useReducer } from "react";
+import { SettingsDialogContext } from "./useSettingsDialog";
+import type { ActionDialogAction, ActionDialogState } from "./useSettingsDialog";
 
 const initialState: ActionDialogState = {
   show: false,
@@ -50,15 +32,6 @@ const actionDialogReducer = (
   }
 };
 
-type SettingsDialogContextValue = {
-  dialog: ActionDialogState;
-  action: React.Dispatch<ActionDialogAction>;
-};
-
-const SettingsDialogContext = createContext<
-  SettingsDialogContextValue | undefined
->(undefined);
-
 export const SettingsDialogProvider = ({
   children,
 }: {
@@ -76,13 +49,4 @@ export const SettingsDialogProvider = ({
       {children}
     </SettingsDialogContext.Provider>
   );
-};
-
-export const useSettingsDialog = () => {
-  const ctx = useContext(SettingsDialogContext);
-  if (!ctx)
-    throw new Error(
-      "useSettingsDialog must be used within SettingsDialogContextProvider",
-    );
-  return ctx;
 };

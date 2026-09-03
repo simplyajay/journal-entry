@@ -9,15 +9,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/common/ui/dialog";
-import {
-  SettingsDialogProvider,
-  useSettingsDialog,
-} from "./SettingsDialogContext";
-import { useMain } from "@/pages/contexts/MainLayoutContext";
+import { SettingsDialogProvider } from "./SettingsDialogContext";
+import { useSettingsDialog } from "./useSettingsDialog";
+import { useMain } from "@/contexts/useMain";
 import { useState } from "react";
 import { User, Users, Settings, LucideNotebookText } from "lucide-react";
-import { Button } from "../../../components/common/ui/button";
-import ActionDialog from "../../../components/common/dialog/ActionDialog";
+import { Button } from "@/components/common/ui/button";
+import ActionDialog from "@/components/common/dialog/ActionDialog";
 
 type Tab = "account" | "organization" | "general" | "auditlog";
 
