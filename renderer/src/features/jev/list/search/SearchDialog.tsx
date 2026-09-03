@@ -6,13 +6,19 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../../../../components/common/ui/dialog";
-import { Button } from "../../../../components/common/ui/button";
+} from "@/components/common/ui/dialog";
+import { Button } from "@/components/common/ui/button";
 import { LabeledTextInput } from "@/components/common/field/TextInput";
-import { LabeledDatePicker } from "../../../../components/common/field/DatePicker";
+import { LabeledDatePicker } from "@/components/common/field/DatePicker";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { JEVSearchSchema, type JEVSearchSchemaType } from "./_schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+
+const defaultSearchValues = (): JEVSearchSchemaType => ({
+  keyword: "",
+  dateFrom: new Date(new Date().getFullYear(), 0, 1),
+  dateTo: new Date(),
+});
 
 interface SearchDialogProps {
   isOpen: boolean;
@@ -32,16 +38,12 @@ const SearchDialog = ({ isOpen, setOpen, handleSearch }: SearchDialogProps) => {
     resolver: zodResolver(JEVSearchSchema),
     reValidateMode: "onSubmit",
     shouldFocusError: false,
-    defaultValues: {
-      keyword: "",
-      startDate: new Date(),
-      endDate: new Date(),
-    },
+    defaultValues: defaultSearchValues(),
   });
 
   useEffect(() => {
     if (isOpen) {
-      reset();
+      reset(defaultSearchValues());
     }
   }, [isOpen, reset]);
 
@@ -84,7 +86,7 @@ const SearchDialog = ({ isOpen, setOpen, handleSearch }: SearchDialogProps) => {
             <div className="flex items-center justify-around gap-4">
               <LabeledDatePicker
                 control={control}
-                fieldName="startDate"
+                fieldName="dateFrom"
                 placeholder="Start Date"
                 errors={errors}
                 clearErrors={clearErrors}
@@ -94,7 +96,7 @@ const SearchDialog = ({ isOpen, setOpen, handleSearch }: SearchDialogProps) => {
 
               <LabeledDatePicker
                 control={control}
-                fieldName="endDate"
+                fieldName="dateTo"
                 placeholder="End Date"
                 errors={errors}
                 clearErrors={clearErrors}

@@ -10,15 +10,15 @@ export const toDateOnly = (date: Date): string => {
 export const JEVSearchSchema = z
   .object({
     keyword: z.string().nonempty("Please enter keyword."),
-    startDate: z.date("Select date."),
-    endDate: z.date("Select Date."),
+    dateFrom: z.date("Select date."),
+    dateTo: z.date("Select Date."),
   })
   .superRefine((data, ctx) => {
-    if (data.startDate > data.endDate) {
+    if (data.dateFrom > data.dateTo) {
       ctx.addIssue({
         code: "custom",
         message: "Start date must be before end date.",
-        path: ["endDate"],
+        path: ["dateTo"],
       });
     }
   });
