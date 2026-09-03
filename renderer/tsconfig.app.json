@@ -6,7 +6,11 @@
     "module": "esnext",
     "types": ["vite/client"],
     "skipLibCheck": true,
-    "paths": { "@/*": ["./src/*"] },
+    "strict": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@shared/*": ["../electron/shared/*"]
+    },
 
     /* Bundler mode */
     "moduleResolution": "bundler",

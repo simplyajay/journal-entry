@@ -1,13 +1,20 @@
 import type {
-  JournalEntryVoucherDTO,
+  CreateJournalEntryVoucherDTO,
+  getJevByOwnerAndIdParams,
+  getJevSummariesByOwnerParams,
+  JournalEntryVoucherDetail,
   PaginatedJevSummaries,
-} from "@/components/form/jev/_types";
+  searchJevSummariesByOwnerParams,
+} from "@shared/types/jev";
+
 import type {
   AccountSchemaBaseType,
   ProfileSchemaType,
-} from "@/components/form/account/_schema";
+} from "@/features/settings/tabs/account/_schema";
 import type { User } from "./user";
 import type { LoginHistory } from "./log";
+import type { LoginSchemaType } from "@/features/login/_schema";
+import type { SetupSchemaType } from "@/features/setup/_schema";
 
 export type IpcResult<T> =
   | { success: true; data: T }
@@ -24,7 +31,7 @@ interface WindowHandlers {
 }
 
 interface AuthHandlers {
-  login: (data: LoginCredentials) => Promise<IpcResult<User>>;
+  login: (data: LoginSchemaType) => Promise<IpcResult<User>>;
   logout: () => Promise<IpcResult<void>>;
 }
 
@@ -34,9 +41,7 @@ interface LogHandlers {
 
 interface OrganizationHandlers {
   getUser: (id: string) => Promise<IpcResult<User>>;
-  createOrganization: (
-    data: CreateOriganizationDTO,
-  ) => Promise<IpcResult<string>>;
+  createOrganization: (data: SetupSchemaType) => Promise<IpcResult<string>>;
 }
 
 interface UserHandlers {
@@ -45,18 +50,16 @@ interface UserHandlers {
 }
 
 interface JevHandlers {
-  createJev: (data: JournalEntryVoucherDTO) => Promise<IpcResult<number>>;
-  getJevSummaries: (data: {
-    ownerId: string;
-    pagination: { page: number; pageSize: number };
-    filter: { year: number; month: number };
-  }) => Promise<IpcResult<PaginatedJevSummaries>>;
-  searchJevSummaries: (data: {
-    ownerId: string;
-    keyword: string;
-    pagination: { page: number; pageSize: number };
-    dateRange: { from: string; to: string };
-  }) => Promise<IpcResult<PaginatedJevSummaries>>;
+  createJev: (data: CreateJournalEntryVoucherDTO) => Promise<IpcResult<string>>;
+  getJevSummaries: (
+    data: getJevSummariesByOwnerParams,
+  ) => Promise<IpcResult<PaginatedJevSummaries>>;
+  searchJevSummaries: (
+    data: searchJevSummariesByOwnerParams,
+  ) => Promise<IpcResult<PaginatedJevSummaries>>;
+  getJev: (
+    data: getJevByOwnerAndIdParams,
+  ) => Promise<IpcResult<JournalEntryVoucherDetail | null>>;
   getJevYears: (data: { ownerId: string }) => Promise<IpcResult<number[]>>;
 }
 

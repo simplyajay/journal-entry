@@ -1,7 +1,9 @@
 import { contextBridge, ipcRenderer } from "electron";
 import type {
   CreateJournalEntryVoucherDTO,
+  getJevByOwnerAndIdParams,
   getJevSummariesByOwnerParams,
+  JournalEntryVoucherDetail,
   PaginatedJevSummaries,
   PaginationParams,
   searchJevSummariesByOwnerParams,
@@ -49,6 +51,9 @@ type JevHandlers = {
   searchJevSummaries: (
     data: searchJevSummariesByOwnerParams,
   ) => Promise<IpcResult<PaginatedJevSummaries>>;
+  getJev: (
+    data: getJevByOwnerAndIdParams,
+  ) => Promise<IpcResult<JournalEntryVoucherDetail | null>>;
   getJevYears: (data: { ownerId: string }) => Promise<IpcResult<number[]>>;
 };
 
@@ -99,6 +104,8 @@ contextBridge.exposeInMainWorld("api", {
       ipcRenderer.invoke("jev:get-jev-summary", data),
     searchJevSummaries: (data: searchJevSummariesByOwnerParams) =>
       ipcRenderer.invoke("jev:search-jev-summary", data),
+    getJev: (data: getJevByOwnerAndIdParams) =>
+      ipcRenderer.invoke("jev:get-jev", data),
     getJevYears: (data: { ownerId: string }) => ipcRenderer.invoke("jev:get-years", data),
   },
 
