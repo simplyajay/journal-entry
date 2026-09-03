@@ -18,7 +18,7 @@ export const withFieldWrapper = <
       | undefined;
 
     return (
-      <div className="font-manrope-600 flex flex-1 flex-col gap-1 text-sm">
+      <div className="font-manrope flex flex-1 flex-col gap-1 text-sm">
         {props.label && <p className="text-xs text-gray-700">{props.label}</p>}
 
         <Component {...props} />

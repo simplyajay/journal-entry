@@ -43,7 +43,7 @@ export const DatePicker = <T extends FieldValues>({
               <Button
                 variant="outline"
                 size="icon-lg"
-                id="date"
+                id={`date-${fieldName}`}
                 aria-invalid={!!errorMessage}
                 disabled={field.disabled}
                 className={clsx(

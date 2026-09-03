@@ -11,7 +11,7 @@ import {
 } from "../ui/select";
 import { INPUT_BASE, INPUT_VARIANTS } from "./_styles";
 import { withFieldWrapper } from "./withFieldWrapper";
-import type { ControllerInputProps, SelectInputProps } from "./_types";
+import type { SelectInputProps } from "./_types";
 import type { FieldValues } from "react-hook-form";
 import type { WithFieldWrapperProps } from "./withFieldWrapper";
 
@@ -25,6 +25,7 @@ export const SelectInput = <T extends FieldValues>({
   disabled,
   clearErrors,
   errors,
+  onValueChange,
 }: SelectInputProps<T>) => {
   const { errorMessage } = useFieldBase({ fieldName, clearErrors, errors });
 
@@ -36,7 +37,10 @@ export const SelectInput = <T extends FieldValues>({
       render={({ field }) => (
         <Select
           value={field.value ?? ""}
-          onValueChange={(val) => field.onChange(val || undefined)}
+          onValueChange={(val) => {
+            field.onChange(val || undefined);
+            onValueChange?.(val);
+          }}
         >
           <SelectTrigger
             className={clsx(
@@ -75,5 +79,5 @@ export const SelectInput = <T extends FieldValues>({
 export const LabeledSelectInput = withFieldWrapper(SelectInput) as <
   T extends FieldValues,
 >(
-  props: ControllerInputProps<T> & WithFieldWrapperProps,
+  props: SelectInputProps<T> & WithFieldWrapperProps,
 ) => React.ReactElement;
