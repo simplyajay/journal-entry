@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { toCents } from "@/lib/money";
+import { MIN_ACCOUNT_ROWS } from "../_constants";
 import type { JournalType, SupportingDocumentType } from "./_types";
 
 const AccountEntrySchema = z
@@ -99,7 +101,7 @@ const BaseSchema = z.object({
   journalEntryVoucherDate: z.date("Select Date"),
   accountingEntries: z
     .array(AccountEntrySchema)
-    .min(2, "Enter atleast 2 accounts"),
+    .min(MIN_ACCOUNT_ROWS, `Enter at least ${MIN_ACCOUNT_ROWS} accounts`),
   description: z.string().nonempty("Please enter description."),
 });
 
@@ -146,9 +148,6 @@ export const JournalEntrySchema = z
     { error: "Select Journal" },
   )
   .superRefine((data, ctx) => {
-    const toCents = (n: unknown): number =>
-      typeof n === "number" && !isNaN(n) ? Math.round(n * 100) : 0;
-
     const totalsCents = data.accountingEntries.reduce(
       (acc, entry) => ({
         debit: acc.debit + toCents(entry.debit),
