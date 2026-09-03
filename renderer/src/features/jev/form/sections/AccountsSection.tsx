@@ -3,14 +3,18 @@ import { EditableTable } from "@/components/common/table/EditableTable";
 import { TableRow, TableCell } from "@/components/common/ui/table";
 import { useFieldArray, useWatch } from "react-hook-form";
 import { getAccountEntrySectionFields } from "../_fields";
-import { useJevFormContext } from "../JevFormContext";
-import { formatNumber } from "@/components/common/lib/utils";
-import type { AccountEntry } from "@/components/form/jev/_types";
+import { useAccountsAndExplanations } from "../useAccountsAndExplanations";
+import { useJevFormContext } from "../useJevFormContext";
+import { MIN_ACCOUNT_ROWS } from "../../_constants";
+import { formatNumber, toCents } from "@/lib/money";
+import type { FieldError, FieldErrors, Path } from "react-hook-form";
+import type { AccountEntry } from "../_types";
 import type {
   AccountingEntrySchemaType,
   JournalEntrySchemaType,
-} from "@/components/form/jev/_schema";
-import { toCents } from "../_lib";
+} from "../_schema";
+
+const accountErrorPaths: Path<JournalEntrySchemaType>[] = ["accountingEntries"];
 
 const defaultAccountEntry: AccountEntry = {
   accountCode: "",
@@ -18,6 +22,11 @@ const defaultAccountEntry: AccountEntry = {
   debit: undefined,
   credit: undefined,
 };
+
+const getArrayLevelMessage = (
+  error: FieldErrors<JournalEntrySchemaType>["accountingEntries"],
+): string | undefined =>
+  (error as FieldError | undefined)?.message ?? error?.root?.message;
 
 const AccountsSection = () => {
   const { form, journalType } = useJevFormContext();
@@ -35,7 +44,17 @@ const AccountsSection = () => {
 
   const accountingEntries = useWatch({ control, name: "accountingEntries" });
 
-  const accountSectionFields = getAccountEntrySectionFields(journalType);
+  const { codeOptions, nameOptions } = useAccountsAndExplanations();
+
+  const accountSectionFields = useMemo(
+    () =>
+      getAccountEntrySectionFields(journalType).map((col) => {
+        if (col.name === "accountCode") return { ...col, options: codeOptions };
+        if (col.name === "accountName") return { ...col, options: nameOptions };
+        return col;
+      }),
+    [journalType, codeOptions, nameOptions],
+  );
 
   const totals = useMemo(() => {
     const cents = accountingEntries?.reduce(
@@ -56,9 +75,7 @@ const AccountsSection = () => {
 
   const isNotBalance = totals.credit !== totals.debit;
 
-  const balanceErrorMessage =
-    (errors.accountingEntries as any)?.message ??
-    errors.accountingEntries?.root?.message;
+  const balanceErrorMessage = getArrayLevelMessage(errors.accountingEntries);
 
   return (
     <div className="border-ring/50 flex w-full flex-col rounded-md border">
@@ -80,7 +97,8 @@ const AccountsSection = () => {
         remove={removeAccount}
         disabled={!journalType}
         defaultRow={defaultAccountEntry}
-        customErrorPaths={["accountingEntries"]}
+        customErrorPaths={accountErrorPaths}
+        minRows={MIN_ACCOUNT_ROWS}
         footerClass="bg-transparent"
         footerContent={
           <>
@@ -110,7 +128,8 @@ const AccountsSection = () => {
               <TableRow className="pt-0">
                 <TableCell colSpan={2} />
                 <TableCell colSpan={2}>
-                  <p className="font-poppins-300 text-sm text-red-500">
+                  {/* D3: `font-poppins-300` was never a generated class. */}
+                  <p className="font-poppins text-sm font-light text-red-500">
                     {balanceErrorMessage}
                   </p>
                 </TableCell>

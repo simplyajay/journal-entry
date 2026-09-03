@@ -2,11 +2,17 @@ import { useMemo } from "react";
 import { EditableTable } from "@/components/common/table/EditableTable";
 import { useFieldArray } from "react-hook-form";
 import { getSupportingDocumentSectionFields } from "../_fields";
-import { useJevFormContext } from "../JevFormContext";
+import { useJevFormContext } from "../useJevFormContext";
 import type {
   JournalEntrySchemaType,
   SupportingDocumentSchemaType,
 } from "../_schema";
+
+const defaultSupportingDocument = {
+  type: "ar" as const,
+  number: "",
+  date: undefined,
+};
 
 const DocumentsSection = () => {
   const { form, journalType } = useJevFormContext();
@@ -43,12 +49,7 @@ const DocumentsSection = () => {
         disabled={!journalType}
         append={appendDocument}
         remove={removeDocument}
-        defaultRow={{
-          type: "ar",
-          number: "",
-          date: undefined,
-        }}
-        isOptional
+        defaultRow={defaultSupportingDocument}
       />
     </div>
   );

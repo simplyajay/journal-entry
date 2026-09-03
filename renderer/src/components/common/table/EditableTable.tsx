@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo, useCallback } from "react";
 import { Button } from "../ui/button";
 import {
   Table as TableBase,
@@ -17,17 +17,16 @@ import type {
   FieldPath,
   UseFormReturn,
 } from "react-hook-form";
-import type { SelectOptions, InputType } from "../field/_types";
+import type { InputField } from "../field/_types";
 import { InputRenderer } from "../field/RHFInputRenderer";
 
-export type EditableTableColumn<TRow extends FieldValues> = {
+export type EditableTableColumn<TRow extends FieldValues> = Omit<
+  InputField<TRow>,
+  "name"
+> & {
   name: FieldPath<TRow>;
   label: string;
-  type: InputType;
-  placeholder?: string;
   width?: string;
-  disabled?: boolean;
-  options?: SelectOptions[];
   getDisabled?: (row: TRow) => boolean;
 };
 
@@ -42,19 +41,93 @@ type EditableTableProps<TRow extends FieldValues, TForm extends FieldValues> = {
   footerClass?: string;
   footerContent?: React.ReactNode;
   customErrorPaths?: Path<TForm>[];
-  isOptional?: boolean;
+  minRows?: number;
   disabled?: boolean;
 };
 
-/**
- * Editable RHF table for nested field arrays.
- *
- * Assumes `name` is an array property on the parent form
- * (e.g. `accountingEntries`, `supportingDocuments`).
- *
- * Root-level array forms have not been tested and may
- * require changes to field path generation.
- */
+type EditableTableRowProps<
+  TRow extends FieldValues,
+  TForm extends FieldValues,
+> = {
+  columns: EditableTableColumn<TRow>[];
+  rowIndex: number;
+  name: Path<TForm>;
+  form: UseFormReturn<TForm>;
+  defaultRow: Partial<TRow>;
+  disabled?: boolean;
+  canRemove: boolean;
+  onRemove: (rowIndex: number) => void;
+  onClearErrors: (rowIndex: number) => void;
+};
+
+function EditableTableRowInner<
+  TRow extends FieldValues,
+  TForm extends FieldValues,
+>({
+  columns,
+  rowIndex,
+  name,
+  form,
+  defaultRow,
+  disabled,
+  canRemove,
+  onRemove,
+  onClearErrors,
+}: EditableTableRowProps<TRow, TForm>) {
+  const rowValues = useWatch({
+    control: form.control,
+    name: `${name}.${rowIndex}` as Path<TForm>,
+  });
+
+  return (
+    <TableRow
+      onClick={() => onClearErrors(rowIndex)}
+      className={`${!disabled ? "hover:bg-muted/50" : ""}`}
+    >
+      {columns.map((col) => {
+        const values = (rowValues ?? defaultRow) as TRow;
+        const cellDisabled = col.getDisabled
+          ? (col.disabled ?? false) || col.getDisabled(values)
+          : (col.disabled ?? false);
+
+        return (
+          <TableCell
+            key={String(col.name)}
+            className="p-1 align-top"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <InputRenderer<TRow, TForm>
+              field={col}
+              fieldName={
+                `${name}.${rowIndex}.${String(col.name)}` as Path<TForm>
+              }
+              form={form}
+              variant="table"
+              disabled={disabled || cellDisabled}
+            />
+          </TableCell>
+        );
+      })}
+      <TableCell className="w-0 px-0 py-4 align-top whitespace-nowrap">
+        {canRemove && (
+          <Button
+            variant="destructive"
+            type="button"
+            disabled={disabled}
+            onClick={() => onRemove(rowIndex)}
+          >
+            <Trash2 size={20} className="text-red-400" />
+          </Button>
+        )}
+      </TableCell>
+    </TableRow>
+  );
+}
+
+const EditableTableRow = memo(
+  EditableTableRowInner,
+) as typeof EditableTableRowInner;
+
 export function EditableTable<
   TRow extends FieldValues,
   TForm extends FieldValues,
@@ -69,19 +142,22 @@ export function EditableTable<
   footerContent,
   footerClass,
   customErrorPaths,
-  isOptional,
+  minRows = 0,
   disabled,
 }: EditableTableProps<TRow, TForm>) {
-  const { control, clearErrors } = form;
+  const { clearErrors } = form;
 
-  const watchedFields = useWatch({ control, name });
+  const canRemoveRow = fields.length > minRows;
 
-  const clearRowErrors = (rowIndex: number) => {
-    columns.forEach((col) => {
-      clearErrors(`${name}.${rowIndex}.${String(col.name)}` as Path<TForm>);
-    });
-    customErrorPaths?.forEach((path) => clearErrors(path));
-  };
+  const clearRowErrors = useCallback(
+    (rowIndex: number) => {
+      columns.forEach((col) => {
+        clearErrors(`${name}.${rowIndex}.${String(col.name)}` as Path<TForm>);
+      });
+      customErrorPaths?.forEach((path) => clearErrors(path));
+    },
+    [columns, name, clearErrors, customErrorPaths],
+  );
   return (
     <TableBase
       className={`table-fixed ${disabled ? "bg-muted/10" : ""} rounded-b-lg`}
@@ -100,53 +176,20 @@ export function EditableTable<
         </TableRow>
       </TableHeaderBase>
       <TableBody>
-        {fields.map((row, rowIndex) => {
-          return (
-            <TableRow
-              key={row.id}
-              onClick={() => clearRowErrors(rowIndex)}
-              className={`${!disabled ? "hover:bg-muted/50" : ""}`}
-            >
-              {columns.map((col) => {
-                const rowValues = watchedFields?.[rowIndex] ?? defaultRow;
-                const cellDisabled = col.getDisabled
-                  ? (col.disabled ?? false) ||
-                    col.getDisabled(rowValues as TRow)
-                  : (col.disabled ?? false);
-
-                return (
-                  <TableCell
-                    key={String(col.name)}
-                    className="p-1 align-top"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <InputRenderer<TRow, TForm>
-                      field={col}
-                      fieldName={
-                        `${name}.${rowIndex}.${String(col.name)}` as any
-                      }
-                      form={form}
-                      variant="table"
-                      disabled={disabled || cellDisabled}
-                    />
-                  </TableCell>
-                );
-              })}
-              <TableCell className="w-0 px-0 py-4 align-top whitespace-nowrap">
-                {(isOptional || rowIndex > 1) && (
-                  <Button
-                    variant="destructive"
-                    type="button"
-                    disabled={disabled}
-                    onClick={() => remove(rowIndex)}
-                  >
-                    <Trash2 size={20} className="text-red-400" />
-                  </Button>
-                )}
-              </TableCell>
-            </TableRow>
-          );
-        })}
+        {fields.map((row, rowIndex) => (
+          <EditableTableRow<TRow, TForm>
+            key={row.id}
+            columns={columns}
+            rowIndex={rowIndex}
+            name={name}
+            form={form}
+            defaultRow={defaultRow}
+            disabled={disabled}
+            canRemove={canRemoveRow}
+            onRemove={remove}
+            onClearErrors={clearRowErrors}
+          />
+        ))}
         <TableRow>
           <TableCell className="p-0 text-center" colSpan={columns.length + 1}>
             <Button

@@ -23,6 +23,7 @@ type BaseDataTableProps<T> = {
   actionWidth?: string;
   rowHoverClass?: string;
   stickyHeader?: boolean;
+  emptyMessage?: React.ReactNode;
 };
 
 type DataTableProps<T> =
@@ -37,7 +38,7 @@ type DataTableProps<T> =
       actionComponent?: undefined;
     });
 
-const DataTable = <T extends Record<string, any>>({
+const DataTable = <T extends Record<string, unknown>>({
   columns,
   rows,
   getRowId,
@@ -47,7 +48,9 @@ const DataTable = <T extends Record<string, any>>({
   actionComponent,
   rowHoverClass,
   stickyHeader,
+  emptyMessage = "No data to show.",
 }: DataTableProps<T>) => {
+  const columnCount = columns.length + (actionEnabled ? 1 : 0);
   return (
     <div className="relative w-full">
       <TableBase
@@ -74,6 +77,16 @@ const DataTable = <T extends Record<string, any>>({
           </TableRow>
         </TableHeaderBase>
         <TableBody>
+          {rows.length === 0 && (
+            <TableRow noBorder>
+              <TableCell
+                colSpan={columnCount}
+                className="h-32 text-center text-gray-400 italic"
+              >
+                {emptyMessage}
+              </TableCell>
+            </TableRow>
+          )}
           {rows.map((row, index) => (
             <TableRow
               className={`${rowHoverClass} group`}
@@ -93,12 +106,6 @@ const DataTable = <T extends Record<string, any>>({
           ))}
         </TableBody>
       </TableBase>
-
-      {rows.length === 0 && (
-        <div className="pointer-events-none absolute inset-0 top-80 flex w-full items-center justify-center text-4xl text-gray-400 italic">
-          No data to show.
-        </div>
-      )}
     </div>
   );
 };
